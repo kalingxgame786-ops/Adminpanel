@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Staff Portal</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        /* --- Modern Theme Variables (Staff Emerald Theme) --- */
+        :root {
+            --primary-bg: #0b0f19; --secondary-bg: #141b2d; --card-bg: #1a2235; --sidebar-bg: #0b0f19;
+            --text-primary: #f8fafc; --text-secondary: #94a3b8; --accent-color: #10b981;
+            --accent-gradient: linear-gradient(135deg, #059669, #10b981); 
+            --primary-button-bg: #10b981; --primary-button-hover: #059669;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --success-color: #10b981; --danger-color: #ef4444; --warning-color: #f59e0b; --info-color: #0ea5e9;
+        }
+
+        body { background-color: var(--primary-bg); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--primary-bg); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        .section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .section.active { display: block; opacity: 1; transform: translateY(0); animation: slideUpFade 0.4s ease forwards; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Layout */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0; height: 70px;
+            background: rgba(20, 27, 45, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+            border-bottom: 1px solid var(--border-color); z-index: 1030; transition: left 0.3s ease;
+        }
+        .header-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0;}
+        .menu-toggle-btn { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; margin-right: 15px;}
+        
+        .offcanvas-start { background-color: var(--sidebar-bg); width: 280px !important; border-right: 1px solid var(--border-color); transition: transform 0.3s ease; }
+        .offcanvas-header { border-bottom: 1px solid var(--border-color); padding: 1.5rem; }
+        .offcanvas-title h5 { font-weight: 800; color: #fff; margin:0;}
+        .offcanvas-body { padding: 1rem 0; overflow-y: auto;}
+        
+        .nav-link { color: var(--text-secondary); padding: 12px 24px; font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; transition: all 0.2s; margin: 2px 12px; border-radius: 8px;}
+        .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+        .nav-link.active { color: #fff; background: var(--accent-gradient); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); font-weight: 600;}
+        .nav-link i { font-size: 1.2rem; margin-right: 14px; width: 20px; text-align: center; }
+
+        .main-content { padding: 90px 24px 30px; transition: margin-left 0.3s ease; min-height: 100vh; }
+        @media (min-width: 992px) {
+            .offcanvas-start { transform: none !important; visibility: visible !important; position: fixed; height: 100vh; z-index: 1040;}
+            .offcanvas-backdrop { display: none !important; }
+            .app-header { left: 280px; }
+            .main-content { margin-left: 280px; }
+            .menu-toggle-btn { display: none; }
+        }
+
+        /* Cards & Tables */
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); margin-bottom: 24px; }
+        .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; color: #fff; }
+        
+        .dash-card { position: relative; overflow: hidden; border-radius: 16px; padding: 24px; border: none; }
+        .dash-card-icon { position: absolute; right: -10px; bottom: -20px; font-size: 5rem; opacity: 0.15; transform: rotate(-15deg); }
+        .dash-card h5 { font-size: 0.9rem; text-transform: uppercase; opacity: 0.9; margin-bottom: 10px; font-weight: 600;}
+        .dash-card p { font-size: 2.2rem; font-weight: 800; margin: 0; line-height: 1;}
+
+        .bg-gradient-blue { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; }
+        .bg-gradient-green { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+        .bg-gradient-dark { background: linear-gradient(135deg, #1e293b, #334155); color: white; }
+
+        .table-responsive { border-radius: 12px; overflow: auto; border: 1px solid var(--border-color); background: var(--card-bg);}
+        .table { margin-bottom: 0; color: var(--text-primary); }
+        .table th { background-color: rgba(0,0,0,0.2) !important; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); padding: 16px; white-space: nowrap;}
+        .table td { background-color: transparent !important; border-bottom: 1px solid var(--border-color); padding: 16px; vertical-align: middle; white-space: nowrap;}
+        .table-hover > tbody > tr:hover > td { background-color: rgba(255, 255, 255, 0.03) !important; }
+        
+        /* Inputs & Modals */
+        .btn { border-radius: 8px; font-weight: 500; transition: 0.2s;}
+        .btn-primary { background: var(--primary-button-bg); border: none; color: white; }
+        .btn-primary:hover { background: var(--primary-button-hover); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .form-control, .form-select { background-color: rgba(0,0,0,0.2); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px;}
+        .form-control:focus, .form-select:focus { background-color: rgba(0,0,0,0.3); border-color: var(--success-color); color: #fff; box-shadow: none; }
+        
+        .modal-content { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; }
+        .modal-header { border-bottom: 1px solid var(--border-color); }
+        .modal-footer { border-top: 1px solid var(--border-color); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+
+        .login-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top left, #064e3b, #0b0f19); }
+        .login-container { width: 100%; max-width: 420px; padding: 20px; }
+        .login-container .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.3); padding: 2rem;}
+
+        /* Fast Z-Index Global Loader */
+        #globalLoader { position: fixed; inset: 0; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(8px); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="globalLoader" style="display: none;">
+        <div class="spinner-border text-success" style="width: 3rem; height: 3rem; border-width: 4px;" role="status"></div>
+    </div>
+
+    <!-- Login Area -->
+    <div id="auth-container" class="login-wrapper">
+        <div class="login-container">
+            <div class="card shadow-lg">
+                <div class="text-center mb-4">
+                    <div style="width: 60px; height: 60px; background: var(--accent-gradient); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;"><i class="bi bi-person-badge-fill fs-2 text-white"></i></div>
+                    <h3 class="fw-bold text-white">Staff Portal</h3><p class="text-secondary small">Authorized Personnel Only</p>
+                </div>
+                <form id="staffLoginForm">
+                    <div class="mb-3"> <label class="form-label">Staff Email</label> <input type="email" class="form-control" id="staffEmail" required> </div>
+                    <div class="mb-4"> <label class="form-label">Password</label> <input type="password" class="form-control" id="staffPassword" required> </div>
+                    <div id="loginStatus"></div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-5" id="loginBtn">Login to Console</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Staff Panel Area -->
+    <div id="staff-main-area" style="display: none;">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="d-flex align-items-center">
+                <button class="menu-toggle-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#staffSidebar"><i class="bi bi-list"></i></button>
+                <h1 class="header-title" id="pageTitle">Overview</h1>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="d-none d-sm-block text-success small fw-bold"><i class="bi bi-circle-fill text-success" style="font-size: 8px; margin-right: 5px;"></i> <span id="staffNameDisplay"></span></span>
+                <button class="btn btn-sm btn-outline-danger" id="logoutBtn"><i class="bi bi-power"></i> Logout</button>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="staffSidebar">
+            <div class="offcanvas-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width:32px; height:32px; background: var(--accent-gradient); border-radius: 8px; display:flex; align-items:center; justify-content:center;"><i class="bi bi-shield-check text-white"></i></div>
+                    <h5 class="offcanvas-title">NEXUS <span class="text-success small fw-light">STAFF</span></h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav flex-column gap-1" id="sidebarNavLinks">
+                    <li class="nav-item"> <a class="nav-link active" data-section="dashboard-section"><i class="bi bi-grid-1x2-fill"></i> Overview</a> </li>
+                    
+                    <div id="nav-tournaments" style="display: none;">
+                        <div class="text-uppercase text-secondary small fw-bold px-4 pt-3 pb-2 mt-2" style="letter-spacing: 0.1em;">Match Ops</div>
+                        <li class="nav-item"> <a class="nav-link" data-section="room-mgt-section"><i class="bi bi-key-fill"></i> Room ID Manager</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-section="results-section"><i class="bi bi-trophy-fill"></i> Upload Results</a> </li>
+                    </div>
+
+                    <div id="nav-finance" style="display: none;">
+                        <div class="text-uppercase text-secondary small fw-bold px-4 pt-3 pb-2 mt-2" style="letter-spacing: 0.1em;">Finance Ops</div>
+                        <li class="nav-item"> <a class="nav-link" data-section="deposits-section"><i class="bi bi-wallet-fill"></i> Verify Deposits <span class="badge bg-warning text-dark rounded-pill ms-auto" id="badgeDeposits">0</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-section="withdrawals-section"><i class="bi bi-bank"></i> Process Payouts <span class="badge bg-danger text-white rounded-pill ms-auto" id="badgeWithdrawals">0</span></a> </li>
+                    </div>
+                    
+                    <div id="nav-support" style="display: none;">
+                        <div class="text-uppercase text-secondary small fw-bold px-4 pt-3 pb-2 mt-2" style="letter-spacing: 0.1em;">User Ops</div>
+                        <li class="nav-item"> <a class="nav-link" data-section="support-section"><i class="bi bi-headset"></i> Tickets & Reports</a> </li>
+                    </div>
+
+                    <div class="text-uppercase text-secondary small fw-bold px-4 pt-3 pb-2 mt-2" style="letter-spacing: 0.1em;">Personal</div>
+                    <li class="nav-item"> <a class="nav-link" data-section="logs-section"><i class="bi bi-journal-text"></i> My Activity Logs</a> </li>
+                </ul>
+            </div>
+        </div>
+
+        <main class="main-content" id="mainContent">
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-md-6 col-xl-4"><div class="card dash-card bg-gradient-blue shadow-lg h-100"><h5>Active Matches</h5><p id="statActiveTournaments">--</p><i class="bi bi-controller dash-card-icon"></i></div></div>
+                    <div class="col-12 col-md-6 col-xl-4"><div class="card dash-card bg-gradient-dark shadow-lg h-100"><h5>Pending Tasks</h5><p id="statPendingTasks">--</p><i class="bi bi-list-task dash-card-icon"></i></div></div>
+                    <div class="col-12 col-md-12 col-xl-4"><div class="card dash-card bg-gradient-green shadow-lg h-100"><h5>My Actions (Today)</h5><p id="statMyActions">--</p><i class="bi bi-check2-circle dash-card-icon"></i></div></div>
+                </div>
+                
+                <h4 class="mb-3">My Recent Activity Logs</h4>
+                <div class="card p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Time</th><th>Action Performed</th></tr></thead>
+                            <tbody id="recentLogsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Room Management Section -->
+            <section id="room-mgt-section" class="section">
+                <h2 class="section-title">Room ID Management</h2>
+                <div class="card p-4">
+                    <p class="text-secondary mb-4">Release Room ID & Password 15 minutes before the match starts.</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead><tr><th>Match Title</th><th>Schedule</th><th>Current Status</th><th>Room Details</th><th>Manage</th></tr></thead>
+                            <tbody id="roomsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Match Results Section -->
+            <section id="results-section" class="section">
+                <h2 class="section-title">Upload Match Results</h2>
+                <div class="card p-4">
+                    <div class="row mb-4"><div class="col-md-6"><label class="form-label text-success fw-bold">Select Active/Finished Match</label><select class="form-select form-select-lg border-success" id="resultTournamentSelect"></select></div></div>
+                    <div id="resultStatus" class="mb-3"></div>
+                    <div id="resultPlayerListContainer" style="display: none;">
+                        <div class="table-responsive border border-secondary mb-4">
+                            <table class="table table-hover mb-0">
+                                <thead><tr><th>Player Name</th><th>In-Game UID</th><th>Kills</th><th>Bonus (₹)</th><th>Rank</th><th>Total Payout</th></tr></thead>
+                                <tbody id="resultPlayerListTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="text-end"><button class="btn btn-success btn-lg px-5 shadow-lg" id="creditWinningsBtn"><i class="bi bi-check2-all"></i> Submit & Process Payouts</button></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payment Verification (Deposits) Section -->
+            <section id="deposits-section" class="section">
+                <h2 class="section-title">Deposit Verification</h2>
+                <div class="card p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Date</th><th>Player Name / Email</th><th>Amount</th><th>UTR/Ref No.</th><th>Screenshot</th><th>Action</th></tr></thead>
+                            <tbody id="pendingDepositsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Withdrawals Section -->
+            <section id="withdrawals-section" class="section">
+                <h2 class="section-title">Process Withdrawals</h2>
+                <div class="card p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Date</th><th>Player Name / Email</th><th>Amount</th><th>Method Details</th><th>Action</th></tr></thead>
+                            <tbody id="pendingWithdrawalsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Support & Reports Section -->
+            <section id="support-section" class="section">
+                <h2 class="section-title">Support Tickets & Reports</h2>
+                <div class="card p-4">
+                    <p class="text-secondary">Respond to player issues and resolve hacking reports.</p>
+                    <div class="table-responsive border border-secondary">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Date</th><th>Player</th><th>Subject/Type</th><th>Message/Reason</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="supportTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Staff Logs Section -->
+            <section id="logs-section" class="section">
+                <h2 class="section-title">My Full Activity Logs</h2>
+                <div class="card p-3">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Date & Time</th><th>Action Description</th></tr></thead>
+                            <tbody id="fullLogsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Room Edit Modal -->
+    <div class="modal fade" id="roomModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"> <h5 class="modal-title text-success">Release Room Details</h5> <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> </div>
+                <div class="modal-body p-4">
+                    <form id="roomForm">
+                        <input type="hidden" id="roomIdField">
+                        <div class="mb-3"> <label class="form-label">Room ID</label> <input type="text" class="form-control" id="roomInputId" required> </div>
+                        <div class="mb-3"> <label class="form-label">Room Password</label> <input type="text" class="form-control" id="roomInputPass" required> </div>
+                        <div class="form-check form-switch mt-4"> <input class="form-check-input" type="checkbox" id="roomInputShow"> <label class="form-check-label fw-bold text-warning" for="roomInputShow">Make Details Visible to Players</label> </div>
+                        <div id="roomModalStatus" class="mt-3"></div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 bg-dark"> <button type="button" class="btn btn-success px-4" id="saveRoomBtn">Update Room</button> </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image View Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark border-secondary">
+                <div class="modal-header border-secondary"> <h5 class="modal-title">Attached Proof</h5> <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> </div>
+                <div class="modal-body text-center p-0">
+                    <img id="previewImage" src="" alt="Proof" class="img-fluid w-100" style="max-height: 70vh; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Review Modal -->
+    <div class="modal fade" id="withdrawalActionModal" tabindex="-1"> 
+        <div class="modal-dialog modal-dialog-centered"> 
+            <div class="modal-content border-warning"> 
+                <div class="modal-header border-warning bg-warning bg-opacity-10"> <h5 class="modal-title text-warning">Process Payout</h5> <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> </div> 
+                <div class="modal-body p-4"> 
+                    <div class="bg-dark p-3 rounded mb-3 border border-secondary text-center"> <span class="d-block text-secondary small text-uppercase">Requested Amount</span> <h2 class="text-white m-0">₹<span id="withdrawalDetailAmount"></span></h2> </div>
+                    <div id="withdrawalRejectReasonDiv" style="display: none;" class="mb-3"> <label class="form-label text-danger">Rejection Reason</label> <textarea class="form-control" id="withdrawalRejectReason" rows="2" placeholder="Tell user why..."></textarea> </div> 
+                    <div id="withdrawalApproveNoteDiv" style="display: none;" class="mb-3"> <label class="form-label text-success">Bank/UPI Ref No.</label> <input type="text" class="form-control" id="withdrawalApproveNote" placeholder="Txn ID..."> </div> 
+                </div> 
+                <div class="modal-footer border-0"> <button type="button" class="btn btn-danger px-4" id="rejectWithdrawalBtn">Decline</button> <button type="button" class="btn btn-success px-4" id="approveWithdrawalBtn">Confirm Sent</button> </div> 
+            </div> 
+        </div> 
+    </div>
+
+    <!-- Ticket Reply Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-info">
+                <div class="modal-header bg-dark"> <h5 class="modal-title text-info">Respond to Ticket</h5> <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> </div>
+                <div class="modal-body p-4">
+                    <form id="replyForm">
+                        <input type="hidden" id="replyTicketId">
+                        <p class="small text-secondary mb-2">Issue: <span id="replyIssueText" class="text-white"></span></p>
+                        <div class="mb-3"> <textarea class="form-control" id="replyInputText" rows="4" placeholder="Type your response here..." required></textarea> </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 bg-dark"> <button type="button" class="btn btn-info px-4" id="saveReplyBtn">Send Reply & Close</button> </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        // SAFE API INCLUDED: increment
+        import { getDatabase, ref, get, update, push, query, orderByChild, equalTo, onValue, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // ==========================================
+        // FIREBASE CONFIGURATION
+        // ==========================================
+        const firebaseConfig = {
+  apiKey: "AIzaSyBz2EQwxcMTu8AsmL0sBZqj0mo2zeZRoS8",
+  authDomain: "kaling-game.firebaseapp.com",
+  databaseURL: "https://kaling-game-default-rtdb.firebaseio.com",
+  projectId: "kaling-game",
+  storageBucket: "kaling-game.firebasestorage.app",
+  messagingSenderId: "40298906254",
+  appId: "1:40298906254:web:7ba0dc200e6407bde3bfdf",
+  measurementId: "G-6F5Q85YX4S"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Core Variables
+        let currentStaff = null;
+        let staffPermissions = [];
+        let userDataCache = {}; // FAST ON-DEMAND CACHE
+        let currentWithdrawalAction = { id: null, userId: null };
+        let isManualLogin = false; // PREVENTS LOGIN DOUBLE TRIGGER BUG
+
+        // UI Helpers
+        const getEl = id => document.getElementById(id);
+        const showLoader = show => {
+            const loader = getEl('globalLoader');
+            if(loader) loader.style.display = show ? 'flex' : 'none';
+        };
+        const showStatus = (el, msg, type = 'danger') => { 
+            if(el) { el.innerHTML = `<div class="alert alert-${type} small py-2 px-3 mb-0 mt-3">${msg}</div>`; setTimeout(() => el.innerHTML='', 5000); }
+        };
+        const formatDate = ts => ts ? new Date(Number(ts)).toLocaleString([], { dateStyle: 'short', timeStyle: 'short'}) : 'N/A';
+        
+        // Ensure modals exist safely
+        const safeModal = (id) => getEl(id) ? new bootstrap.Modal(getEl(id)) : null;
+        const modals = {
+            room: safeModal('roomModal'),
+            image: safeModal('imageModal'),
+            reply: safeModal('replyModal'),
+            withdrawal: safeModal('withdrawalActionModal')
+        };
+
+        // Section Router
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('#sidebarNavLinks .nav-link');
+        
+        function switchSection(targetId) {
+            sections.forEach(s => s.classList.remove('active'));
+            const target = getEl(targetId);
+            if(target) {
+                target.classList.add('active');
+                navLinks.forEach(l => l.classList.toggle('active', l.dataset.section === targetId));
+                getEl('pageTitle').innerText = document.querySelector(`[data-section="${targetId}"]`).innerText;
+                loadDataForSection(targetId);
+                if (window.innerWidth < 992) bootstrap.Offcanvas.getInstance(getEl('staffSidebar'))?.hide();
+            }
+        }
+
+        navLinks.forEach(l => l.addEventListener('click', e => { e.preventDefault(); switchSection(l.dataset.section); }));
+
+        // Fast User Data Fetcher
+        async function getUserInfo(uid) {
+            if (!uid) return { email: 'Unknown', displayName: 'Unknown', gameUid: '-' };
+            if (userDataCache[uid]) return userDataCache[uid]; // Return from fast cache
+            try {
+                const snap = await get(ref(db, `users/${uid}`));
+                if (snap.exists()) {
+                    userDataCache[uid] = snap.val();
+                    return userDataCache[uid];
+                }
+            } catch (error) { console.error("Error fetching user:", error); }
+            return { email: 'Unknown', displayName: 'Unknown', gameUid: '-' };
+        }
+
+        // Staff Logger Helper
+        async function logAction(actionDesc) {
+            if(!currentStaff) return;
+            try {
+                await push(ref(db, `staffLogs/${currentStaff.uid}`), {
+                    email: currentStaff.email,
+                    name: currentStaff.name,
+                    action: actionDesc,
+                    timestamp: serverTimestamp()
+                });
+            } catch(e){ console.error("Logging failed", e); }
+        }
+
+        // ==========================================
+        // BUG-FREE AUTHENTICATION SYSTEM
+        // ==========================================
+        
+        // Function to setup panel AFTER successful verification
+        async function setupStaffPanel(user) {
+            try {
+                const staffSnap = await get(ref(db, `staff/${user.uid}`));
+                if (staffSnap.exists() && staffSnap.val().status === 'active') {
+                    currentStaff = staffSnap.val();
+                    currentStaff.uid = user.uid;
+                    staffPermissions = currentStaff.permissions || [];
+                    
+                    getEl('staffNameDisplay').innerText = `${currentStaff.name || 'Staff'}`;
+                    getEl('auth-container').style.display = 'none';
+                    getEl('staff-main-area').style.display = 'block';
+                    
+                    startLiveBadges(); 
+                    applyPermissions();
+                    switchSection('dashboard-section');
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error("DB Error:", error);
+                throw error;
+            }
+        }
+
+        // Manual Login Form Submit
+        getEl('staffLoginForm').onsubmit = async (e) => {
+            e.preventDefault(); 
+            isManualLogin = true; // Tell Auth Listener to ignore this event
+            
+            const btn = getEl('loginBtn');
+            btn.innerText = "Authenticating...";
+            btn.disabled = true;
+            showLoader(true);
+            
+            try {
+                const cred = await signInWithEmailAndPassword(auth, getEl('staffEmail').value, getEl('staffPassword').value);
+                const isValidStaff = await setupStaffPanel(cred.user);
+                
+                if(!isValidStaff) {
+                    await signOut(auth);
+                    showStatus(getEl('loginStatus'), "Access Denied: You don't have Staff permissions.");
+                }
+            } catch(error) { 
+                showStatus(getEl('loginStatus'), "Login Failed: Invalid Email or Password."); 
+                await signOut(auth);
+            } finally {
+                btn.innerText = "Login to Console";
+                btn.disabled = false;
+                showLoader(false); 
+                isManualLogin = false; // Reset flag
+            }
+        };
+
+        // Logout
+        getEl('logoutBtn').onclick = async () => { 
+            showLoader(true); 
+            await signOut(auth); 
+            window.location.reload(); 
+        };
+
+        // Auth State Listener (Handles Page Reloads / Returning Users)
+        onAuthStateChanged(auth, async (user) => {
+            if(isManualLogin) return; // Ignore if triggered by the login form button
+            
+            if (user) {
+                showLoader(true);
+                try {
+                    const isValidStaff = await setupStaffPanel(user);
+                    if(!isValidStaff) {
+                        await signOut(auth);
+                        showStatus(getEl('loginStatus'), "Session Expired or Access Denied.");
+                        getEl('staff-main-area').style.display = 'none';
+                        getEl('auth-container').style.display = 'flex';
+                    }
+                } catch (error) {
+                    console.error("Auth Verification Error:", error);
+                    showStatus(getEl('loginStatus'), "Database connection failed. Please refresh.");
+                    await signOut(auth);
+                } finally {
+                    showLoader(false);
+                }
+            } else {
+                currentStaff = null;
+                getEl('staff-main-area').style.display = 'none';
+                getEl('auth-container').style.display = 'flex';
+                showLoader(false);
+            }
+        });
+
+        // Lightweight Live Trackers for Badges
+        function startLiveBadges() {
+            if(staffPermissions.includes('finance') || staffPermissions.includes('all')) {
+                onValue(query(ref(db,'deposits'),orderByChild('status'),equalTo('pending')), s => {
+                    getEl('badgeDeposits').innerText = s.exists() ? s.size : 0;
+                });
+                onValue(query(ref(db,'withdrawals'),orderByChild('status'),equalTo('pending')), s => {
+                    getEl('badgeWithdrawals').innerText = s.exists() ? s.size : 0;
+                });
+            }
+        }
+
+        function applyPermissions() {
+            const hasAll = staffPermissions.includes('all');
+            if (hasAll || staffPermissions.includes('tournaments')) getEl('nav-tournaments').style.display = 'block';
+            if (hasAll || staffPermissions.includes('finance')) getEl('nav-finance').style.display = 'block';
+            if (hasAll || staffPermissions.includes('users') || staffPermissions.includes('support')) getEl('nav-support').style.display = 'block';
+        }
+
+        function loadDataForSection(sec) {
+            if(sec === 'dashboard-section') loadDashboard();
+            if(sec === 'room-mgt-section') loadRooms();
+            if(sec === 'results-section') loadTournamentResultsData();
+            if(sec === 'deposits-section') loadPendingDeposits();
+            if(sec === 'withdrawals-section') loadPendingWithdrawals();
+            if(sec === 'support-section') loadSupportTickets();
+            if(sec === 'logs-section') loadStaffLogs();
+        }
+
+        // ==========================================
+        // MODULE 1: DASHBOARD
+        // ==========================================
+        async function loadDashboard() {
+            try {
+                const tSnap = await get(ref(db, 'tournaments'));
+                let active = 0;
+                if(tSnap.exists()){ tSnap.forEach(c => { const s = c.val().status; if(['upcoming','ongoing'].includes(s)) active++; }); }
+                getEl('statActiveTournaments').innerText = active;
+
+                let tasks = 0;
+                if(staffPermissions.includes('finance') || staffPermissions.includes('all')) {
+                    const d = await get(query(ref(db, 'deposits'), orderByChild('status'), equalTo('pending')));
+                    const w = await get(query(ref(db, 'withdrawals'), orderByChild('status'), equalTo('pending')));
+                    tasks += (d.exists() ? d.size : 0) + (w.exists() ? w.size : 0);
+                }
+                getEl('statPendingTasks').innerText = tasks;
+
+                const lSnap = await get(query(ref(db, `staffLogs/${currentStaff.uid}`)));
+                let logs = [], todayCount = 0;
+                const today = new Date().setHours(0,0,0,0);
+                
+                if(lSnap.exists()){ 
+                    lSnap.forEach(c => {
+                        const l = c.val();
+                        logs.push(l);
+                        if(l.timestamp >= today) todayCount++;
+                    }); 
+                }
+                getEl('statMyActions').innerText = todayCount;
+
+                logs.sort((a,b) => b.timestamp - a.timestamp);
+                let h = '';
+                logs.slice(0, 10).forEach(l => {
+                    h += `<tr><td><small class="text-secondary">${formatDate(l.timestamp)}</small></td><td>${l.action}</td></tr>`;
+                });
+                getEl('recentLogsTableBody').innerHTML = h || '<tr><td colspan="2">No recent activity.</td></tr>';
+            } catch(e) { console.error("Dash Error:", e); }
+        }
+
+        // ==========================================
+        // MODULE 2: ROOM MANAGEMENT
+        // ==========================================
+        async function loadRooms() {
+            const s = await get(ref(db, 'tournaments')); let h='';
+            if(s.exists()){
+                s.forEach(c => {
+                    const t = c.val();
+                    if(t.status === 'upcoming' || t.status === 'ongoing') {
+                        const idPassStr = t.roomId ? `<span class="text-warning">ID: ${t.roomId}</span><br><small>Pass: ${t.roomPassword}</small>` : '<span class="text-secondary">Not Set</span>';
+                        const vis = t.showIdPass ? '<span class="badge bg-success">Visible</span>' : '<span class="badge bg-secondary">Hidden</span>';
+                        h += `<tr>
+                            <td class="fw-bold">${t.name}</td>
+                            <td>${formatDate(t.startTime)}</td>
+                            <td><span class="badge bg-info text-dark">${t.status}</span> ${vis}</td>
+                            <td>${idPassStr}</td>
+                            <td><button class="btn btn-sm btn-success" data-action="edit-room" data-id="${c.key}">Update Room</button></td>
+                        </tr>`;
+                    }
+                });
+            }
+            getEl('roomsTableBody').innerHTML = h || '<tr><td colspan="5">No active matches require room details.</td></tr>';
+        }
+
+        getEl('saveRoomBtn').onclick = async () => {
+            showLoader(true);
+            const tid = getEl('roomIdField').value;
+            try {
+                await update(ref(db, `tournaments/${tid}`), { 
+                    roomId: getEl('roomInputId').value, 
+                    roomPassword: getEl('roomInputPass').value, 
+                    showIdPass: getEl('roomInputShow').checked 
+                });
+                await logAction(`Updated Room Details for Match ID: ${tid}`);
+                if(modals.room) modals.room.hide();
+                loadRooms();
+            } catch(e) { alert("Error saving room"); }
+            finally { showLoader(false); }
+        };
+
+        // ==========================================
+        // MODULE 3: MATCH RESULTS (Safe On-Demand Fetching)
+        // ==========================================
+        async function loadTournamentResultsData() {
+            getEl('resultTournamentSelect').innerHTML='<option>Loading...</option>'; 
+            const s = await get(ref(db,'tournaments')); let h='<option value="">Select Match to Upload Results</option>';
+            if(s.exists()){ 
+                s.forEach(c=>{ 
+                    const t=c.val(); 
+                    if(['ongoing','completed','result'].includes(t.status)) 
+                        h+=`<option value="${c.key}" data-perkill="${t.perKillPrize}">${t.name} - Status: ${t.status}</option>`; 
+                }); 
+            }
+            getEl('resultTournamentSelect').innerHTML=h;
+        }
+
+        getEl('resultTournamentSelect').onchange = async (e) => {
+            const tid = e.target.value; 
+            if(!tid) return getEl('resultPlayerListContainer').style.display='none';
+            
+            getEl('resultPlayerListContainer').style.display='block'; 
+            getEl('resultPlayerListTableBody').innerHTML='<tr><td colspan="6" class="text-warning"><div class="spinner-border spinner-border-sm me-2"></div> Fetching Players...</td></tr>';
+            
+            try {
+                const t = (await get(ref(db,`tournaments/${tid}`))).val(); 
+                getEl('creditWinningsBtn').disabled = t.winningsCredited; 
+                let h='';
+                
+                if(t.registeredPlayers){ 
+                    for(const uid of Object.keys(t.registeredPlayers)){ 
+                        const u = await getUserInfo(uid); // FAST ASYNC FETCH
+                        h+=`<tr data-uid="${uid}" data-pk="${t.perKillPrize}">
+                            <td>${u.displayName||u.email}</td>
+                            <td>${u.gameUid||'N/A'}</td>
+                            <td><input type="number" class="form-control form-control-sm kills-input" value="0" min="0" ${t.winningsCredited?'disabled':''}></td>
+                            <td><input type="number" class="form-control form-control-sm extra-input" value="0" min="0" ${t.winningsCredited?'disabled':''}></td>
+                            <td><input type="number" class="form-control form-control-sm rank-input" placeholder="Rank" ${t.winningsCredited?'disabled':''}></td>
+                            <td class="text-success fw-bold calc-prize">₹0</td>
+                        </tr>`; 
+                    } 
+                }
+                getEl('resultPlayerListTableBody').innerHTML=h||`<tr><td colspan="6">No players registered</td></tr>`;
+            } catch(err) {
+                console.error(err);
+                getEl('resultPlayerListTableBody').innerHTML='<tr><td colspan="6" class="text-danger">Failed to load players</td></tr>';
+            }
+        };
+
+        getEl('resultPlayerListTableBody').oninput = e => { 
+            if(e.target.tagName==='INPUT'){ 
+                const row=e.target.closest('tr'); 
+                const pk=Number(row.dataset.pk), k=Number(row.querySelector('.kills-input').value), ex=Number(row.querySelector('.extra-input').value); 
+                row.querySelector('.calc-prize').innerText='₹'+((pk*k)+ex); 
+            } 
+        };
+
+        getEl('creditWinningsBtn').onclick = async () => {
+            if(!confirm("Are you sure? This will instantly credit real money to player wallets!")) return;
+            showLoader(true); 
+            const tid = getEl('resultTournamentSelect').value; 
+            const updates = {};
+            
+            getEl('resultPlayerListTableBody').querySelectorAll('tr').forEach(r => {
+                const uid = r.dataset.uid, pk = Number(r.dataset.pk);
+                const k = Number(r.querySelector('.kills-input').value), ex = Number(r.querySelector('.extra-input').value), rank = r.querySelector('.rank-input').value;
+                const total = (pk * k) + ex;
+                if(total > 0) { 
+                    updates[`users/${uid}/winningCash`] = increment(total); 
+                }
+                updates[`tournaments/${tid}/registeredPlayers/${uid}/kills`] = k; 
+                updates[`tournaments/${tid}/registeredPlayers/${uid}/rank`] = rank; 
+                updates[`tournaments/${tid}/registeredPlayers/${uid}/prize`] = total;
+            });
+            updates[`tournaments/${tid}/winningsCredited`] = true; 
+            updates[`tournaments/${tid}/status`] = 'result';
+            
+            try {
+                await update(ref(db), updates); 
+                await logAction(`Processed Payouts for Match ID: ${tid}`);
+                showStatus(getEl('resultStatus'), 'Results Uploaded & Payouts Processed successfully!', 'success'); 
+                getEl('resultTournamentSelect').dispatchEvent(new Event('change')); 
+            } catch(e){ alert("Error processing payouts"); }
+            finally { showLoader(false); }
+        };
+
+        // ==========================================
+        // MODULE 4: DEPOSITS & WITHDRAWALS (FAST FETCH)
+        // ==========================================
+        async function loadPendingDeposits() {
+            getEl('pendingDepositsTableBody').innerHTML = '<tr><td colspan="6" class="text-warning">Fetching payments...</td></tr>';
+            const s = await get(query(ref(db,'deposits'),orderByChild('status'),equalTo('pending'))); 
+            let h='';
+            if(s.exists()) { 
+                const arr = []; s.forEach(c=>arr.push({id:c.key,...c.val()})); 
+                arr.sort((x,y)=>y.timestamp-x.timestamp);
+                
+                for(const i of arr) {
+                    const user = await getUserInfo(i.userId);
+                    let imgBtn = i.proofUrl ? `<button class="btn btn-sm btn-outline-info" data-action="view-img" data-url="${i.proofUrl}"><i class="bi bi-image"></i> Proof</button>` : 'No Image';
+                    h+=`<tr>
+                        <td><small>${formatDate(i.timestamp)}</small></td>
+                        <td>${user.displayName || user.email}</td>
+                        <td class="fw-bold text-success">₹${i.amount}</td>
+                        <td><span class="text-warning">${i.utr||'-'}</span></td>
+                        <td>${imgBtn}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success" data-action="app-dp" data-id="${i.id}" data-uid="${i.userId}" data-amt="${i.amount}"><i class="bi bi-check-lg"></i></button> 
+                            <button class="btn btn-sm btn-danger" data-action="rej-dp" data-id="${i.id}"><i class="bi bi-x-lg"></i></button>
+                        </td>
+                    </tr>`; 
+                }
+            } 
+            getEl('pendingDepositsTableBody').innerHTML = h || '<tr><td colspan="6" class="text-center">No pending payments.</td></tr>';
+        }
+
+        async function loadPendingWithdrawals() {
+            getEl('pendingWithdrawalsTableBody').innerHTML = '<tr><td colspan="5" class="text-warning">Fetching withdrawals...</td></tr>';
+            const s = await get(query(ref(db,'withdrawals'),orderByChild('status'),equalTo('pending'))); 
+            let h='';
+            if(s.exists()) { 
+                const arr = []; s.forEach(c=>arr.push({id:c.key,...c.val()})); 
+                arr.sort((x,y)=>y.requestTimestamp-x.requestTimestamp);
+
+                for(const i of arr) {
+                    const user = await getUserInfo(i.userId);
+                    h+=`<tr>
+                        <td><small>${formatDate(i.requestTimestamp)}</small></td>
+                        <td>${user.displayName || user.email}</td>
+                        <td class="fw-bold text-danger">₹${i.amount}</td>
+                        <td>${i.methodDetails?.accountInfo||i.method}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success" data-action="app-wd" data-id="${i.id}">Accept</button> 
+                            <button class="btn btn-sm btn-danger" data-action="rej-wd" data-id="${i.id}">Reject</button>
+                        </td>
+                    </tr>`; 
+                }
+            } 
+            getEl('pendingWithdrawalsTableBody').innerHTML = h || '<tr><td colspan="5" class="text-center">No pending withdrawals.</td></tr>';
+        }
+
+        getEl('approveWithdrawalBtn').onclick = async () => { 
+            showLoader(true); 
+            try {
+                await update(ref(db, `withdrawals/${currentWithdrawalAction.id}`), { status: 'completed', adminNote: getEl('withdrawalApproveNote').value, processedAt:serverTimestamp(), verifiedBy: currentStaff.name }); 
+                await logAction(`Approved Withdrawal: ${currentWithdrawalAction.id}`);
+                if(modals.withdrawal) modals.withdrawal.hide(); 
+                loadPendingWithdrawals(); 
+            } catch(e) { console.error(e); alert("Action Failed"); }
+            finally { showLoader(false); }
+        };
+        
+        getEl('rejectWithdrawalBtn').onclick = async () => { 
+            showLoader(true); 
+            try {
+                const w = (await get(ref(db, `withdrawals/${currentWithdrawalAction.id}`))).val(); 
+                // Safe Refund using increment
+                await update(ref(db, `users/${w.userId}`), { balance: increment(w.amount) }); 
+                await update(ref(db, `withdrawals/${currentWithdrawalAction.id}`), { status: 'rejected', rejectReason: getEl('withdrawalRejectReason').value, processedAt:serverTimestamp(), verifiedBy: currentStaff.name }); 
+                await logAction(`Rejected Withdrawal (Refunded ₹${w.amount}): ${currentWithdrawalAction.id}`);
+                if(modals.withdrawal) modals.withdrawal.hide(); 
+                loadPendingWithdrawals(); 
+            } catch(e) { console.error(e); alert("Action Failed"); }
+            finally { showLoader(false); }
+        };
+
+        // ==========================================
+        // MODULE 5: SUPPORT TICKETS & REPORTS
+        // ==========================================
+        async function loadSupportTickets() {
+            getEl('supportTableBody').innerHTML = '<tr><td colspan="6" class="text-warning">Fetching tickets...</td></tr>';
+            const s = await get(query(ref(db,'supportTickets'),orderByChild('status'),equalTo('open'))); let h='';
+            if(s.exists()){
+                const arr = []; s.forEach(c => arr.push({id: c.key, ...c.val()}));
+                
+                for(const t of arr) {
+                    const u = await getUserInfo(t.userId);
+                    h += `<tr>
+                        <td><small>${formatDate(t.timestamp)}</small></td>
+                        <td>${u.email}</td>
+                        <td class="fw-bold text-info">${t.subject || 'Help Request'}</td>
+                        <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${t.message}">${t.message}</td>
+                        <td><span class="badge bg-warning text-dark">Open</span></td>
+                        <td><button class="btn btn-sm btn-info text-white" data-action="reply-ticket" data-id="${t.id}" data-msg="${t.message}">Reply</button></td>
+                    </tr>`;
+                }
+            }
+            getEl('supportTableBody').innerHTML = h || '<tr><td colspan="6">No open tickets at the moment.</td></tr>';
+        }
+
+        getEl('saveReplyBtn').onclick = async () => {
+            showLoader(true);
+            const tid = getEl('replyTicketId').value;
+            const replyMsg = getEl('replyInputText').value;
+            try {
+                await update(ref(db, `supportTickets/${tid}`), { status: 'closed', adminReply: replyMsg, resolvedBy: currentStaff.name, resolvedAt: serverTimestamp() });
+                await logAction(`Responded to Support Ticket: ${tid}`);
+                if(modals.reply) modals.reply.hide();
+                loadSupportTickets();
+            } catch(e) { alert("Error updating ticket"); }
+            finally { showLoader(false); }
+        };
+
+        // ==========================================
+        // MODULE 6: ACTIVITY LOGS
+        // ==========================================
+        async function loadStaffLogs() {
+            const lSnap = await get(query(ref(db, `staffLogs/${currentStaff.uid}`)));
+            let logs = [];
+            if(lSnap.exists()){ lSnap.forEach(c => logs.push(c.val())); }
+            logs.sort((a,b) => b.timestamp - a.timestamp);
+            let h = '';
+            logs.forEach(l => {
+                h += `<tr><td><small class="text-secondary">${formatDate(l.timestamp)}</small></td><td class="fw-medium">${l.action}</td></tr>`;
+            });
+            getEl('fullLogsTableBody').innerHTML = h || '<tr><td colspan="2">No records found.</td></tr>';
+        }
+
+        // ==========================================
+        // GLOBAL CLICK HANDLER (WITH TRY/FINALLY)
+        // ==========================================
+        document.body.addEventListener('click', async e => {
+            const btn = e.target.closest('button[data-action]'); if(!btn) return;
+            const a = btn.dataset.action, id = btn.dataset.id;
+            
+            try {
+                // Deposit Approval (Safe Increment)
+                if(a === 'app-dp') {
+                    if(!confirm("Verify this payment? Wallet balance will be added automatically.")) return;
+                    showLoader(true); 
+                    const uid = btn.dataset.uid, amt = Number(btn.dataset.amt); 
+                    await update(ref(db, `users/${uid}`), { balance: increment(amt) }); 
+                    await update(ref(db, `deposits/${id}`), { status: 'completed', processedAt: serverTimestamp(), verifiedBy: currentStaff.name }); 
+                    await logAction(`Verified deposit of ₹${amt} for User ID: ${uid}`);
+                    loadPendingDeposits(); 
+                    showLoader(false);
+                }
+                
+                // Deposit Rejection
+                if(a === 'rej-dp') { 
+                    if(!confirm("Reject and drop this payment request?")) return;
+                    showLoader(true); 
+                    await update(ref(db, `deposits/${id}`), { status: 'rejected', processedAt: serverTimestamp(), rejectedBy: currentStaff.name }); 
+                    await logAction(`Rejected invalid deposit (ID: ${id})`);
+                    loadPendingDeposits(); 
+                    showLoader(false); 
+                }
+
+                // Withdrawals Triggers
+                if(a==='app-wd') { 
+                    currentWithdrawalAction={id, type:'app'}; 
+                    getEl('withdrawalDetailAmount').textContent=(await get(ref(db,`withdrawals/${id}`))).val().amount; 
+                    getEl('withdrawalApproveNoteDiv').style.display='block'; getEl('withdrawalRejectReasonDiv').style.display='none'; getEl('rejectWithdrawalBtn').style.display='none'; getEl('approveWithdrawalBtn').style.display='block'; 
+                    if(modals.withdrawal) modals.withdrawal.show(); 
+                }
+                if(a==='rej-wd') { 
+                    currentWithdrawalAction={id, type:'rej'}; 
+                    getEl('withdrawalDetailAmount').textContent=(await get(ref(db,`withdrawals/${id}`))).val().amount; 
+                    getEl('withdrawalApproveNoteDiv').style.display='none'; getEl('withdrawalRejectReasonDiv').style.display='block'; getEl('approveWithdrawalBtn').style.display='none'; getEl('rejectWithdrawalBtn').style.display='block'; 
+                    if(modals.withdrawal) modals.withdrawal.show(); 
+                }
+
+                // Edit Room
+                if(a === 'edit-room') {
+                    const t = (await get(ref(db, `tournaments/${id}`))).val();
+                    getEl('roomIdField').value = id;
+                    getEl('roomInputId').value = t.roomId || '';
+                    getEl('roomInputPass').value = t.roomPassword || '';
+                    getEl('roomInputShow').checked = t.showIdPass || false;
+                    if(modals.room) modals.room.show();
+                }
+
+                // View Image
+                if(a === 'view-img') {
+                    getEl('previewImage').src = btn.dataset.url;
+                    if(modals.image) modals.image.show();
+                }
+
+                // Reply to Ticket
+                if(a === 'reply-ticket') {
+                    getEl('replyTicketId').value = id;
+                    getEl('replyIssueText').innerText = btn.dataset.msg;
+                    getEl('replyInputText').value = '';
+                    if(modals.reply) modals.reply.show();
+                }
+
+            } catch(error) { 
+                console.error("Action Error: ", error); 
+                alert("Something went wrong. Please try again.");
+                showLoader(false); 
+            }
+        });
+
+    </script>
+</body>
+</html>
