@@ -1339,9 +1339,31 @@
         function toDatetimeLocal(ts) { if(!ts) return ''; const d = new Date(ts); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
         getElement('saveTournamentBtn').onclick = async () => { showLoader(true); const data = { gameId: getElement('tournamentGame').value, name: getElement('tournamentName').value, startTime: new Date(getElement('tournamentStartTime').value).getTime(), status: getElement('tournamentStatus').value, entryFee: Number(getElement('tournamentEntryFee').value), prizePool: Number(getElement('tournamentPrizePool').value), perKillPrize: Number(getElement('tournamentPerKill').value), maxPlayers: Number(getElement('tournamentMaxPlayers').value), mode: getElement('tournamentMode').value, tags: getElement('tournamentTags').value.split(','), bannerUrl: getElement('tournamentBannerUrl').value, description: getElement('tournamentDescription').value, roomId: getElement('tournamentRoomId').value, roomPassword: getElement('tournamentRoomPassword').value, showIdPass: getElement('tournamentShowIdPass').checked }; if (currentEditingTournamentId) await update(ref(db, `tournaments/${currentEditingTournamentId}`), data); else await push(ref(db, 'tournaments'), data); getModalInstance(getElement('addTournamentModal')).hide(); loadTournaments(); showLoader(false); };
 
-        /* --- Match Results (TMS) & Payouts --- */
-        async function populateTournamentManagementSelector() { getElement('tmsTournamentSelect').innerHTML='<option>Loading...</option>'; const s=await get(ref(db,'tournaments')); let h='<option value="">Select Match</option>'; if(s.exists()){ s.forEach(c=>{ const t=c.val(); if(['ongoing','completed','result'].includes(t.status)) h+=`<option value="${c.key}" data-perkill="${t.perKillPrize}">${t.name} - ${t.status}</option>`; }); } getElement('tmsTournamentSelect').innerHTML=h; }
-        getElement('tmsTournamentSelect').onchange = async (e) => { const tid = e.target.value; if(!tid) return getElement('tmsPlayerListContainer').style.display='none'; getElement('tmsPlayerListContainer').style.display='block'; getElement('tmsPlayerListTableBody').innerHTML=tableLoadingPlaceholderHtml(7); const t = (await get(ref(db,`tournaments/${tid}`))).val(); getElement('creditWinningsBtn').disabled=t.winningsCredited; let h=''; if(t.registeredPlayers){ for(const uid of Object.keys(t.registeredPlayers)){ const u=fullUserDataCache[uid]; if(u){ h+=`<tr data-uid="${uid}" data-pk="${t.perKillPrize}"><td>${u.displayName||u.email}</td><td>${u.gameUid||'-'}</td><td>₹${t.perKillPrize}</td><td><input type="number" class="form-control form-control-sm kills-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm extra-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm rank-input" placeholder="Rank" ${t.winningsCredited?'disabled':''}></td><td class="text-accent fw-bold calc-prize">₹0</td></tr>`; } } } getElement('tmsPlayerListTableBody').innerHTML=h||`<tr><td colspan="7">No players registered</td></tr>`; };
+                /* --- Match Results (TMS) & Payouts --- */
+                async function populateTournamentManagementSelector() {
+                    // Populate the tournament dropdown for Match Results management.
+                    // Include all relevant statuses and gracefully handle missing/empty statuses.
+                    getElement('tmsTournamentSelect').innerHTML = '<option>Loading...</option>';
+                    const snap = await get(ref(db, 'tournaments'));
+                    const allowedStatuses = new Set(['upcoming', 'ongoing', 'completed', 'result']);
+                    let html = '<option value="">Select Match</option>';
+                    if (snap.exists()) {
+                        snap.forEach(c => {
+                            const t = c.val();
+                            const status = t.status || '';
+                            if (allowedStatuses.has(status)) {
+                                // Standard case: known status.
+                                html += `<option value="${c.key}" data-perkill="${t.perKillPrize}">${t.name} - ${status}</option>`;
+                            } else if (!status) {
+                                // Missing/empty status – include but log a warning.
+                                console.warn('Tournament', c.key, 'has missing status; including in selector.');
+                                html += `<option value="${c.key}" data-perkill="${t.perKillPrize}">${t.name} - unknown</option>`;
+                            }
+                        });
+                    }
+                    getElement('tmsTournamentSelect').innerHTML = html;
+                }
+                getElement('tmsTournamentSelect').onchange = async (e) => { const tid = e.target.value; if(!tid) return getElement('tmsPlayerListContainer').style.display='none'; getElement('tmsPlayerListContainer').style.display='block'; getElement('tmsPlayerListTableBody').innerHTML=tableLoadingPlaceholderHtml(7); const t = (await get(ref(db,`tournaments/${tid}`))).val(); getElement('creditWinningsBtn').disabled=t.winningsCredited; let h=''; if(t.registeredPlayers){ for(const uid of Object.keys(t.registeredPlayers)){ const u=fullUserDataCache[uid]; if(u){ h+=`<tr data-uid="${uid}" data-pk="${t.perKillPrize}"><td>${u.displayName||u.email}</td><td>${u.gameUid||'-'}</td><td>₹${t.perKillPrize}</td><td><input type="number" class="form-control form-control-sm kills-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm extra-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm rank-input" placeholder="Rank" ${t.winningsCredited?'disabled':''}></td><td class="text-accent fw-bold calc-prize">₹0</td></tr>`; } } } getElement('tmsPlayerListTableBody').innerHTML=h||`<tr><td colspan="7">No players registered</td></tr>`; };
         getElement('tmsPlayerListTableBody').oninput = e => { if(e.target.tagName==='INPUT'){ const row=e.target.closest('tr'); const pk=row.dataset.pk, k=row.querySelector('.kills-input').value, ex=row.querySelector('.extra-input').value; row.querySelector('.calc-prize').textContent='₹'+((pk*k)+Number(ex)); } };
         getElement('creditWinningsBtn').onclick = async () => { showLoader(true); const tid = getElement('tmsTournamentSelect').value; const updates = {}; getElement('tmsPlayerListTableBody').querySelectorAll('tr').forEach(r => { const uid = r.dataset.uid; const pk = Number(r.dataset.pk); const k = Number(r.querySelector('.kills-input').value); const ex = Number(r.querySelector('.extra-input').value); const rank = r.querySelector('.rank-input').value; const total = (pk * k) + ex; if(total > 0) { const currWin = fullUserDataCache[uid].winningCash || 0; updates[`users/${uid}/winningCash`] = currWin + total; } updates[`tournaments/${tid}/registeredPlayers/${uid}/kills`] = k; updates[`tournaments/${tid}/registeredPlayers/${uid}/rank`] = rank; updates[`tournaments/${tid}/registeredPlayers/${uid}/prize`] = total; }); updates[`tournaments/${tid}/winningsCredited`] = true; updates[`tournaments/${tid}/status`] = 'result'; await update(ref(db), updates); showStatus(getElement('tmsStatus'), 'Payouts Processed successfully!', 'success'); getElement('tmsTournamentSelect').dispatchEvent(new Event('change')); showLoader(false); };
 
@@ -1417,3 +1439,4 @@
     </script>
 </body>
 </html>
+
