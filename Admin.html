@@ -1043,6 +1043,9 @@
         };
 
         let currentAdminUser = null, currentWithdrawalAction = { id: null, type: null, userId: null }, currentEditingTournamentId = null;
+        let currentAdminSection = 'dashboard-section';
+        let lastRefreshAt = 0;
+        let lastMobileTap = { time: 0, x: 0, y: 0 };
         let gameDataCache = {}, fullUserDataCache = {}, appSettings = {}, currentAdminPermissions =['all'];
         let newUserChart = null;
 
@@ -1050,6 +1053,47 @@
         function showStatus(el, msg, type = 'danger', auto = 5000) { if (el) { el.innerHTML = `<div class="alert alert-${type} border-0 small px-3 py-2 text-white fw-bold">${msg}</div>`; if (auto) setTimeout(() => el.innerHTML='', auto); } }
         const formatDate = (ts) => ts ? new Date(Number(ts)).toLocaleString([], { dateStyle: 'short', timeStyle: 'short'}) : 'N/A';
         const tableLoadingPlaceholderHtml = (cols) => `<tr class="loading-placeholder"><td colspan="${cols}"><div class="w-100"></div></td></tr>`.repeat(3);
+        function showRefreshToast(message) {
+            let container = document.getElementById('adminRefreshToastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'adminRefreshToastContainer';
+                container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                container.style.zIndex = '1080';
+                document.body.appendChild(container);
+            }
+
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast align-items-center text-bg-dark border-0';
+            toastEl.setAttribute('role', 'status');
+            toastEl.setAttribute('aria-live', 'polite');
+            toastEl.setAttribute('aria-atomic', 'true');
+            toastEl.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body"></div>
+                </div>`;
+            toastEl.querySelector('.toast-body').textContent = message;
+            container.appendChild(toastEl);
+
+            const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 1200 });
+            toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove(), { once: true });
+            toast.show();
+        }
+
+        function shouldRefreshFromTarget(target) {
+            if (!target || target.closest('#adminSidebar, #sidebarNavLinks, .modal, .offcanvas, .nav, .nav-link, a, button, input, select, textarea, table, .table-responsive, .card, [data-bs-toggle]')) {
+                return false;
+            }
+            return target === elements.mainArea || target.classList.contains('section');
+        }
+
+        function refreshAdminData() {
+            const now = Date.now();
+            if (now - lastRefreshAt < 2000) return;
+            lastRefreshAt = now;
+            showRefreshToast('Refreshing...');
+            loadDataForSection(currentAdminSection);
+        }
 
         /* --- Global Modal Reset --- */
         document.querySelectorAll('.modal').forEach(modal => {
@@ -1073,6 +1117,7 @@
 
         /* --- Section Toggler & Sidebar Fix --- */
         function showAdminSection(sectionId) {
+               currentAdminSection = sectionId;
              elements.sections.forEach(sec => sec.classList.remove('active'));
              const targetSection = getElement(sectionId);
              if (targetSection) {
@@ -1089,6 +1134,29 @@
         elements.sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => { e.preventDefault(); showAdminSection(link.dataset.section); });
         });
+
+        if (elements.mainArea) {
+            elements.mainArea.addEventListener('dblclick', (e) => {
+                if (shouldRefreshFromTarget(e.target)) refreshAdminData();
+            });
+
+            elements.mainArea.addEventListener('touchend', (e) => {
+                const touch = e.changedTouches && e.changedTouches[0];
+                if (!touch || !shouldRefreshFromTarget(e.target)) return;
+
+                const now = Date.now();
+                const isDoubleTap = now - lastMobileTap.time < 300 && Math.abs(touch.clientX - lastMobileTap.x) < 24 && Math.abs(touch.clientY - lastMobileTap.y) < 24;
+
+                if (isDoubleTap) {
+                    e.preventDefault();
+                    refreshAdminData();
+                    lastMobileTap = { time: 0, x: 0, y: 0 };
+                    return;
+                }
+
+                lastMobileTap = { time: now, x: touch.clientX, y: touch.clientY };
+            }, { passive: false });
+        }
 
         /* --- Data Core router --- */
         function loadDataForSection(sectionId) {
@@ -1439,4 +1507,3 @@
     </script>
 </body>
 </html>
-
