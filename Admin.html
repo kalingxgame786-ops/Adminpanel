@@ -1408,7 +1408,63 @@
         async function loadTournaments() { if(Object.keys(gameDataCache).length===0) await loadGames(); const snap = await get(ref(db, 'tournaments')); let h=''; if(snap.exists()) { snap.forEach(c=>{ const t=c.val(); h+=`<tr><td class="fw-bold">${t.name}</td><td>${gameDataCache[t.gameId]||'Unknown'}</td><td class="text-success">₹${t.entryFee}</td><td class="text-warning">₹${t.prizePool}</td><td>${formatDate(t.startTime)}</td><td><span class="badge bg-secondary">${t.status}</span></td><td>${t.registeredPlayers?Object.keys(t.registeredPlayers).length:0}/${t.maxPlayers||'∞'}</td><td><button class="btn btn-sm btn-info text-white" data-action="edit-tour" data-id="${c.key}">Edit</button> <button class="btn btn-sm btn-secondary" data-action="view-tour-players" data-id="${c.key}" data-name="${t.name}">Players</button> <button class="btn btn-sm btn-danger" data-action="del-tour" data-id="${c.key}">Del</button></td></tr>`; }); } getElement('tournamentsTableBody').innerHTML = h; }
         getElement('addNewTournamentBtn').onclick = () => { currentEditingTournamentId = null; getElement('tournamentEditId').value = ''; populateGameSelect(); getElement('tournamentForm').reset(); getModalInstance(getElement('addTournamentModal')).show(); };
         function toDatetimeLocal(ts) { if(!ts) return ''; const d = new Date(ts); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
-        getElement('saveTournamentBtn').onclick = async () => { showLoader(true); const data = { gameId: getElement('tournamentGame').value, name: getElement('tournamentName').value, tournamentId: getElement('tournamentId').value, map: getElement('tournamentMap').value, startTime: new Date(getElement('tournamentStartTime').value).getTime(), status: getElement('tournamentStatus').value, entryFee: Number(getElement('tournamentEntryFee').value), prizePool: Number(getElement('tournamentPrizePool').value), perKillPrize: Number(getElement('tournamentPerKill').value), maxPlayers: Number(getElement('tournamentMaxPlayers').value), category: getElement('tournamentCategory').value, mode: getElement('tournamentMode').value, tags: getElement('tournamentTags').value.split(','), bannerUrl: getElement('tournamentBannerUrl').value, description: getElement('tournamentDescription').value, roomId: getElement('tournamentRoomId').value, roomPassword: getElement('tournamentRoomPassword').value, showIdPass: getElement('tournamentShowIdPass').checked }; if (currentEditingTournamentId) await update(ref(db, `tournaments/${currentEditingTournamentId}`), data); else await push(ref(db, 'tournaments'), data); getModalInstance(getElement('addTournamentModal')).hide(); loadTournaments(); showLoader(false); };
+        getElement('saveTournamentBtn').onclick = async () => { 
+            showLoader(true); 
+
+            let tc = 0;
+            let ppt = 0;
+            const cat = (getElement('tournamentCategory').value || '').toLowerCase();
+            const md = (getElement('tournamentMode').value || '').toLowerCase();
+
+            if (cat === 'clash squad') {
+                if (md === 'solo') { tc = 2; ppt = 1; }
+                else if (md === 'duo') { tc = 2; ppt = 2; }
+                else if (md === 'squad') { tc = 2; ppt = 4; }
+                else { tc = 2; ppt = 1; }
+            } else if (cat === 'lone wolf') {
+                if (md === 'solo') { tc = 2; ppt = 1; }
+                else if (md === 'duo') { tc = 2; ppt = 2; }
+                else { tc = 2; ppt = 1; }
+            } else {
+                if (md === 'solo') { tc = 48; ppt = 1; }
+                else if (md === 'duo') { tc = 24; ppt = 2; }
+                else if (md === 'squad') { tc = 12; ppt = 4; }
+                else { tc = 48; ppt = 1; }
+            }
+
+            const data = { 
+                gameId: getElement('tournamentGame').value, 
+                name: getElement('tournamentName').value, 
+                tournamentId: getElement('tournamentId').value, 
+                map: getElement('tournamentMap').value, 
+                startTime: new Date(getElement('tournamentStartTime').value).getTime(), 
+                status: getElement('tournamentStatus').value, 
+                entryFee: Number(getElement('tournamentEntryFee').value), 
+                prizePool: Number(getElement('tournamentPrizePool').value), 
+                perKillPrize: Number(getElement('tournamentPerKill').value), 
+                maxPlayers: Number(getElement('tournamentMaxPlayers').value), 
+                category: getElement('tournamentCategory').value, 
+                mode: getElement('tournamentMode').value, 
+                tags: getElement('tournamentTags').value.split(','), 
+                bannerUrl: getElement('tournamentBannerUrl').value, 
+                description: getElement('tournamentDescription').value, 
+                roomId: getElement('tournamentRoomId').value, 
+                roomPassword: getElement('tournamentRoomPassword').value, 
+                showIdPass: getElement('tournamentShowIdPass').checked,
+                teamCount: tc,
+                playersPerTeam: ppt
+            }; 
+
+            if (currentEditingTournamentId) {
+                await update(ref(db, `tournaments/${currentEditingTournamentId}`), data); 
+            } else {
+                await push(ref(db, 'tournaments'), data); 
+            }
+            
+            getModalInstance(getElement('addTournamentModal')).hide(); 
+            loadTournaments(); 
+            showLoader(false); 
+        };
 
                 /* --- Match Results (TMS) & Payouts --- */
                 async function populateTournamentManagementSelector() {
