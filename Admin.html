@@ -535,11 +535,20 @@
             <!-- Referrals Section -->
             <section id="referrals-section" class="section">
                 <h2 class="section-title">Affiliate / Referrals</h2>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3"><div class="card p-3 border-start border-4 border-info"><small class="text-muted text-uppercase fw-bold">Top Referrer</small><h5 class="fw-bold mt-1 mb-0" id="analyticsTopReferrerEl" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</h5></div></div>
+                    <div class="col-md-3"><div class="card p-3 border-start border-4 border-primary"><small class="text-muted text-uppercase fw-bold">Most Invited</small><h5 class="fw-bold mt-1 mb-0" id="analyticsMostInvitedEl" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</h5></div></div>
+                    <div class="col-md-3"><div class="card p-3 border-start border-4 border-success"><small class="text-muted text-uppercase fw-bold">Total Earnings</small><h5 class="fw-bold mt-1 mb-0 text-success" id="analyticsTotalEarningsEl">₹0</h5></div></div>
+                    <div class="col-md-3"><div class="card p-3 border-start border-4 border-warning"><small class="text-muted text-uppercase fw-bold">Approval Rate</small><h5 class="fw-bold mt-1 mb-0" id="analyticsApprovalRateEl">0%</h5></div></div>
+                </div>
+                
                 <div class="card overflow-hidden">
-                    <div class="bg-dark border-bottom border-secondary"><ul class="nav nav-tabs"><li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pendingReferralsTab" type="button">Awaiting Bonus</button></li><li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#completedReferralsTab" type="button">Bonus Credited</button></li></ul></div>
+                    <div class="bg-dark border-bottom border-secondary"><ul class="nav nav-tabs"><li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pendingReferralsTab" type="button">Awaiting Bonus</button></li><li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#completedReferralsTab" type="button">Bonus Credited</button></li><li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejectedReferralsTab" type="button">Rejected</button></li></ul></div>
                     <div class="card-body tab-content p-0">
                         <div class="tab-pane fade show active" id="pendingReferralsTab"><div class="table-responsive border-0"><table class="table table-hover mb-0"><thead><tr><th>Date Joined</th><th>Inviter</th><th>New Player</th><th>Action</th></tr></thead><tbody id="pendingReferralsTableBody"></tbody></table></div></div>
                         <div class="tab-pane fade" id="completedReferralsTab"><div class="table-responsive border-0"><table class="table table-hover mb-0"><thead><tr><th>Date Credited</th><th>Inviter</th><th>Player</th><th>Bonus Issued</th></tr></thead><tbody id="completedReferralsTableBody"></tbody></table></div></div>
+                        <div class="tab-pane fade" id="rejectedReferralsTab"><div class="table-responsive border-0"><table class="table table-hover mb-0"><thead><tr><th>Date Rejected</th><th>Inviter</th><th>Player</th><th>Reason</th></tr></thead><tbody id="rejectedReferralsTableBody"></tbody></table></div></div>
                     </div>
                 </div>
             </section>
@@ -1173,7 +1182,7 @@
                      case 'withdrawals-section': ['pending','completed','rejected'].forEach(loadWithdrawals); break;
                      case 'deposit-section': ['pending','completed','rejected'].forEach(loadDepositRequests); break;
                      case 'transaction-history-section': loadTransactionHistory(); break;
-                     case 'referrals-section':['pending','completed'].forEach(loadReferrals); break;
+                     case 'referrals-section': loadReferralAnalytics(); ['pending','completed','rejected'].forEach(loadReferrals); break;
                      case 'settings-section': loadSettings(); break;
                      case 'support-manager-section': loadSettings(); break; 
                      case 'theme-section': loadThemeSettings(); break;
@@ -1199,6 +1208,7 @@
                 if(target === '#rejectedDepositsTab') loadDepositRequests('rejected');
                 if(target === '#pendingReferralsTab') loadReferrals('pending');
                 if(target === '#completedReferralsTab') loadReferrals('completed');
+                if(target === '#rejectedReferralsTab') loadReferrals('rejected');
             });
         });
 
@@ -1334,8 +1344,14 @@
         /* ============================================== */
         /* 👇 NEW: APP DEMO / REFERRAL LINK SYSTEM       */
         /* ============================================== */
-        function loadDemoLinkData() {
-            const savedLink = localStorage.getItem('demo_link');
+        async function loadDemoLinkData() {
+            let savedLink = '';
+            try {
+                const snap = await get(ref(db, 'settings/demoLink'));
+                if (snap.exists()) savedLink = snap.val();
+                else savedLink = localStorage.getItem('demo_link') || '';
+            } catch(e) { savedLink = localStorage.getItem('demo_link') || ''; }
+            
             const badge = getElement('demoLinkBadge');
             const display = getElement('demoLinkDisplay');
             const previewBox = getElement('demoLinkPreviewBox');
@@ -1347,7 +1363,8 @@
                 badge.textContent = 'Active Setup';
                 badge.className = 'badge bg-success shadow-sm';
                 previewBox.style.display = 'block';
-                previewTxt.textContent = `${savedLink}/?ref=USER_UID`;
+                const separator = savedLink.includes('?') ? '&' : '?';
+                previewTxt.textContent = `${savedLink}${separator}ref=USER_UID`;
             } else {
                 getElement('demoLinkInput').value = '';
                 display.textContent = 'Not Configured';
@@ -1358,7 +1375,7 @@
         }
 
         if(getElement('saveDemoLinkBtn')) {
-            getElement('saveDemoLinkBtn').onclick = () => {
+            getElement('saveDemoLinkBtn').onclick = async () => {
                 let val = getElement('demoLinkInput').value.trim();
                 let statusEl = getElement('demoLinkStatus');
                 
@@ -1374,20 +1391,24 @@
                 if(val.endsWith('/')) val = val.slice(0, -1);
                 
                 localStorage.setItem('demo_link', val);
-                loadDemoLinkData();
+                await update(ref(db, 'settings'), { demoLink: val });
+                await loadDemoLinkData();
                 showStatus(statusEl, 'Web Link Successfully Saved & Applied!', 'success');
             };
         }
 
         if(getElement('clearDemoLinkBtn')) {
-            getElement('clearDemoLinkBtn').onclick = () => {
+            getElement('clearDemoLinkBtn').onclick = async () => {
                 let statusEl = getElement('demoLinkStatus');
-                if(!localStorage.getItem('demo_link')) {
-                    return showStatus(statusEl, 'No active link to remove.', 'warning');
+                let hasLink = localStorage.getItem('demo_link');
+                if(!hasLink) {
+                    const snap = await get(ref(db, 'settings/demoLink'));
+                    if (!snap.exists()) return showStatus(statusEl, 'No active link to remove.', 'warning');
                 }
                 if(confirm('Are you certain? Demos and referral links will cease functioning across the user panel.')) {
                     localStorage.removeItem('demo_link');
-                    loadDemoLinkData();
+                    await remove(ref(db, 'settings/demoLink'));
+                    await loadDemoLinkData();
                     showStatus(statusEl, 'Link permanently removed.', 'success');
                 }
             };
@@ -1518,7 +1539,8 @@
         /* --- Withdrawals & Deposits & Referrals --- */
         async function loadWithdrawals(st) { const tb = getElement(`${st}WithdrawalsTableBody`); const s = await get(query(ref(db,'withdrawals'),orderByChild('status'),equalTo(st))); let h=''; if(s.exists()) { const w=[]; s.forEach(c=>w.push({id:c.key,...c.val()})); w.sort((x,y)=>y.requestTimestamp-x.requestTimestamp).forEach(i=>{ h+=`<tr><td>${formatDate(i.requestTimestamp)}</td><td>${fullUserDataCache[i.userId]?.email||''}</td><td class="fw-bold text-accent">₹${i.amount}</td><td>${i.methodDetails?.accountInfo||i.method}</td>`; if(st==='pending') h+=`<td><button class="btn btn-sm btn-success" data-action="app-wd" data-id="${i.id}">Accept</button> <button class="btn btn-sm btn-danger" data-action="rej-wd" data-id="${i.id}">Reject</button></td>`; else h+=`<td><small class="text-muted">${i.adminNote||i.rejectReason||''}</small></td>`; h+='</tr>'; }); } tb.innerHTML=h; }
         async function loadDepositRequests(st) { const tb = getElement(`${st}DepositsTableBody`); const s = await get(query(ref(db,'deposits'),orderByChild('status'),equalTo(st))); let h=''; if(s.exists()) { const d=[]; s.forEach(c=>d.push({id:c.key,...c.val()})); d.sort((x,y)=>y.timestamp-x.timestamp).forEach(i=>{ h+=`<tr><td>${formatDate(i.timestamp)}</td><td>${fullUserDataCache[i.userId]?.email||''}</td><td class="fw-bold text-success">₹${i.amount}</td><td>${i.utr||'-'}</td><td>${i.paymentMethod||'-'}</td>`; if(st==='pending') h+=`<td><button class="btn btn-sm btn-success" data-action="app-dp" data-id="${i.id}" data-uid="${i.userId}" data-amt="${i.amount}">Verify</button> <button class="btn btn-sm btn-danger" data-action="rej-dp" data-id="${i.id}">Drop</button></td>`; else h+=`<td>-</td>`; h+='</tr>'; }); } tb.innerHTML=h; }
-        async function loadReferrals(st) { const tb = getElement(`${st}ReferralsTableBody`); const s = await get(query(ref(db,'pendingReferrals'),orderByChild('status'),equalTo(st))); let h=''; if(s.exists()) { const r=[]; s.forEach(c=>r.push({id:c.key,...c.val()})); r.sort((x,y)=>(y.timestamp||y.creditedAt)-(x.timestamp||x.creditedAt)).forEach(i=>{ h+=`<tr><td>${formatDate(i.timestamp||i.creditedAt)}</td><td>${i.referrerEmail||fullUserDataCache[i.referrerUid]?.email||'-'}</td><td>${i.referredEmail||'-'}</td>`; if(st==='pending') h+=`<td><button class="btn btn-sm btn-success" data-action="app-ref" data-id="${i.id}" data-uid="${i.referrerUid}">Credit Bonus</button></td>`; else h+=`<td class="fw-bold text-success">₹${i.bonusAmount}</td>`; h+='</tr>'; }); } tb.innerHTML=h; }
+        async function loadReferrals(st) { const tb = getElement(`${st}ReferralsTableBody`); const s = await get(query(ref(db,'pendingReferrals'),orderByChild('status'),equalTo(st))); let h=''; if(s.exists()) { const r=[]; s.forEach(c=>r.push({id:c.key,...c.val()})); r.sort((x,y)=>(y.timestamp||y.creditedAt||y.rejectedAt)-(x.timestamp||x.creditedAt||x.rejectedAt)).forEach(i=>{ h+=`<tr><td>${formatDate(i.timestamp||i.creditedAt||i.rejectedAt)}</td><td>${i.referrerEmail||fullUserDataCache[i.referrerUid]?.email||'-'}</td><td>${i.referredEmail||'-'}</td>`; if(st==='pending') h+=`<td><button class="btn btn-sm btn-success me-1" data-action="app-ref" data-id="${i.id}" data-uid="${i.referrerUid}" data-remail="${i.referredEmail||'-'}">Approve</button><button class="btn btn-sm btn-danger" data-action="rej-ref" data-id="${i.id}" data-uid="${i.referrerUid}" data-remail="${i.referredEmail||'-'}">Reject</button></td>`; else if(st==='completed') h+=`<td class="fw-bold text-success">₹${i.bonusAmount||0}</td>`; else h+=`<td class="text-danger small">${i.rejectionReason||'No reason provided'}</td>`; h+='</tr>'; }); } tb.innerHTML=h; }
+        async function loadReferralAnalytics() { const snap = await get(ref(db, 'pendingReferrals')); let total = 0, completed = 0, earnings = 0; const refCounts = {}, inviteCounts = {}; if(snap.exists()) { snap.forEach(c => { const r = c.val(); total++; inviteCounts[r.referrerUid] = (inviteCounts[r.referrerUid] || 0) + 1; if(r.status === 'completed') { completed++; earnings += (r.bonusAmount || r.reward || 0); refCounts[r.referrerUid] = (refCounts[r.referrerUid] || 0) + 1; } }); } let topRef = '-', mostInv = '-'; let maxRef = 0, maxInv = 0; Object.entries(refCounts).forEach(([uid, count]) => { if(count > maxRef) { maxRef = count; topRef = uid; } }); Object.entries(inviteCounts).forEach(([uid, count]) => { if(count > maxInv) { maxInv = count; mostInv = uid; } }); getElement('analyticsTopReferrerEl').textContent = maxRef > 0 ? (fullUserDataCache[topRef]?.email?.split('@')[0] || topRef) : '-'; getElement('analyticsMostInvitedEl').textContent = maxInv > 0 ? (fullUserDataCache[mostInv]?.email?.split('@')[0] || mostInv) : '-'; getElement('analyticsTotalEarningsEl').textContent = '₹' + earnings; getElement('analyticsApprovalRateEl').textContent = total > 0 ? ((completed/total)*100).toFixed(1) + '%' : '0%'; }
         getElement('approveWithdrawalBtn').onclick = async () => { showLoader(true); await update(ref(db, `withdrawals/${currentWithdrawalAction.id}`), { status: 'completed', adminNote: getElement('withdrawalApproveNote').value, processedAt:serverTimestamp() }); getModalInstance(getElement('withdrawalActionModal')).hide(); loadWithdrawals('pending'); showLoader(false); };
         getElement('rejectWithdrawalBtn').onclick = async () => { showLoader(true); const w=(await get(ref(db, `withdrawals/${currentWithdrawalAction.id}`))).val(); await update(ref(db, `users/${w.userId}`), { balance: (fullUserDataCache[w.userId].balance||0)+w.amount }); await update(ref(db, `withdrawals/${currentWithdrawalAction.id}`), { status: 'rejected', rejectReason: getElement('withdrawalRejectReason').value, processedAt:serverTimestamp() }); getModalInstance(getElement('withdrawalActionModal')).hide(); loadWithdrawals('pending'); showLoader(false); };
 
@@ -1557,7 +1579,49 @@
                 if(a==='app-dp') { showLoader(true); const uid=btn.dataset.uid, amt=Number(btn.dataset.amt); const uRef=ref(db, `users/${uid}`); const uD=(await get(uRef)).val(); await update(uRef, {balance: (uD.balance||0)+amt}); await update(ref(db, `deposits/${id}`), {status:'completed', processedAt:serverTimestamp()}); loadDepositRequests('pending'); showLoader(false); }
                 if(a==='rej-dp') { showLoader(true); await update(ref(db, `deposits/${id}`), {status:'rejected', processedAt:serverTimestamp()}); loadDepositRequests('pending'); showLoader(false); }
                 
-                if(a==='app-ref') { showLoader(true); const rAmt = Number(appSettings.referralBonus||0); if(rAmt>0){ const uid=btn.dataset.uid; const uRef=ref(db, `users/${uid}`); const uD=(await get(uRef)).val(); await update(uRef, {bonusCash: (uD.bonusCash||0)+rAmt}); } await update(ref(db, `pendingReferrals/${id}`), {status:'completed', bonusAmount:rAmt, creditedAt:serverTimestamp()}); loadReferrals('pending'); showLoader(false); }
+                if(a==='app-ref') { 
+                    showLoader(true); 
+                    const prSnap = await get(ref(db, `pendingReferrals/${id}`));
+                    if (prSnap.exists() && prSnap.val().status === 'pending') {
+                        const rAmt = Number(appSettings.referralBonus||0); 
+                        const uid = btn.dataset.uid;
+                        if(rAmt>0){ 
+                            const uRef = ref(db, `users/${uid}`); 
+                            const uD = (await get(uRef)).val(); 
+                            await update(uRef, {bonusCash: (uD.bonusCash||0)+rAmt, balance: (uD.balance||0)+rAmt}); 
+                        } 
+                        await update(ref(db, `pendingReferrals/${id}`), {status:'completed', bonusAmount:rAmt, creditedAt:serverTimestamp(), adminUid: currentUser.uid}); 
+                        await push(ref(db, `users/${uid}/notifications`), {
+                            title: 'Referral Approved!',
+                            message: `Your referral for ${btn.dataset.remail} was approved! You earned ₹${rAmt}.`,
+                            timestamp: serverTimestamp()
+                        });
+                        loadReferrals('pending'); 
+                        loadReferrals('completed');
+                        loadReferralAnalytics();
+                    }
+                    showLoader(false); 
+                }
+                if(a==='rej-ref') {
+                    const reason = prompt("Enter rejection reason:");
+                    if (reason !== null) {
+                        showLoader(true);
+                        const prSnap = await get(ref(db, `pendingReferrals/${id}`));
+                        if (prSnap.exists() && prSnap.val().status === 'pending') {
+                            const uid = btn.dataset.uid;
+                            await update(ref(db, `pendingReferrals/${id}`), {status:'rejected', rejectionReason: reason, rejectedAt:serverTimestamp(), adminUid: currentUser.uid});
+                            await push(ref(db, `users/${uid}/notifications`), {
+                                title: 'Referral Rejected',
+                                message: `Your referral for ${btn.dataset.remail} was rejected. Reason: ${reason}.`,
+                                timestamp: serverTimestamp()
+                            });
+                            loadReferrals('pending');
+                            loadReferrals('rejected');
+                            loadReferralAnalytics();
+                        }
+                        showLoader(false);
+                    }
+                }
 
                 if(a==='view-user') { const u = fullUserDataCache[id]; getElement('editUserUid').value = id; getElement('userDetailUid').textContent = id; getElement('userDetailEmail').textContent = u.email; getElement('userDetailBalance').textContent = (u.balance||0).toFixed(2); getElement('userDetailWinning').textContent = (u.winningCash||0).toFixed(2); getElement('userDetailBonus').textContent = (u.bonusCash||0).toFixed(2); getElement('userDetailReferralCode').textContent = u.referralCode||'N/A'; getElement('userDetailReferredBy').textContent = u.referredBy||'N/A'; getElement('userDetailStatus').textContent = u.status; getModalInstance(getElement('userModal')).show(); }
             } catch(error) { console.error("Action Error: ", error); }
