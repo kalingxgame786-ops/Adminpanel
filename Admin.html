@@ -1346,9 +1346,13 @@
         /* ============================================== */
         async function loadDemoLinkData() {
             let savedLink = '';
+            let fromFirebase = false;
             try {
                 const snap = await get(ref(db, 'settings/demoLink'));
-                if (snap.exists()) savedLink = snap.val();
+                if (snap.exists()) {
+                    savedLink = snap.val();
+                    fromFirebase = true;
+                }
                 else savedLink = localStorage.getItem('demo_link') || '';
             } catch(e) { savedLink = localStorage.getItem('demo_link') || ''; }
             
@@ -1360,8 +1364,13 @@
             if (savedLink && savedLink.trim() !== '') {
                 getElement('demoLinkInput').value = savedLink;
                 display.textContent = savedLink;
-                badge.textContent = 'Active Setup';
-                badge.className = 'badge bg-success shadow-sm';
+                if (fromFirebase) {
+                    badge.textContent = 'Active Setup';
+                    badge.className = 'badge bg-success shadow-sm';
+                } else {
+                    badge.textContent = 'Inactive (Not Synced)';
+                    badge.className = 'badge bg-warning text-dark shadow-sm';
+                }
                 previewBox.style.display = 'block';
                 const separator = savedLink.includes('?') ? '&' : '?';
                 previewTxt.textContent = `${savedLink}${separator}ref=USER_UID`;
@@ -1390,10 +1399,15 @@
                 
                 if(val.endsWith('/')) val = val.slice(0, -1);
                 
-                localStorage.setItem('demo_link', val);
-                await update(ref(db, 'settings'), { demoLink: val });
-                await loadDemoLinkData();
-                showStatus(statusEl, 'Web Link Successfully Saved & Applied!', 'success');
+                try {
+                    await update(ref(db, 'settings'), { demoLink: val });
+                    localStorage.setItem('demo_link', val);
+                    await loadDemoLinkData();
+                    showStatus(statusEl, 'Web Link Successfully Saved & Applied!', 'success');
+                } catch (err) {
+                    console.error('Firebase demoLink save failed:', err);
+                    showStatus(statusEl, 'FIREBASE SAVE FAILED: ' + (err.message || 'Permission denied — check database rules for the settings node.'), 'danger');
+                }
             };
         }
 
