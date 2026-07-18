@@ -1347,20 +1347,33 @@
         async function loadDemoLinkData() {
             let savedLink = '';
             let fromFirebase = false;
+            let readError = null;
             try {
                 const snap = await get(ref(db, 'settings/demoLink'));
                 if (snap.exists()) {
                     savedLink = snap.val();
                     fromFirebase = true;
                 }
-                else savedLink = localStorage.getItem('demo_link') || '';
-            } catch(e) { savedLink = localStorage.getItem('demo_link') || ''; }
-            
+            } catch(e) {
+                console.error('[demoLink] Firebase read failed:', e);
+                readError = e;
+            }
+
             const badge = getElement('demoLinkBadge');
             const display = getElement('demoLinkDisplay');
             const previewBox = getElement('demoLinkPreviewBox');
             const previewTxt = getElement('demoLinkPreviewTxt');
-            
+
+            if (readError) {
+                getElement('demoLinkInput').value = savedLink || '';
+                display.textContent = 'Firebase read failed';
+                badge.textContent = 'Read Error';
+                badge.className = 'badge bg-danger shadow-sm';
+                previewBox.style.display = 'none';
+                showStatus(getElement('demoLinkStatus'), 'Firebase read failed: ' + (readError.message || readError.code || 'unknown error'), 'danger', 0);
+                return;
+            }
+
             if (savedLink && savedLink.trim() !== '') {
                 getElement('demoLinkInput').value = savedLink;
                 display.textContent = savedLink;
@@ -1387,23 +1400,39 @@
             getElement('saveDemoLinkBtn').onclick = async () => {
                 let val = getElement('demoLinkInput').value.trim();
                 let statusEl = getElement('demoLinkStatus');
-                
+
                 if(!val) return showStatus(statusEl, 'Please enter a valid website URL', 'danger');
                 if(!/^https?:\/\//i.test(val)) val = 'https://' + val;
-                
-                try { 
-                    new URL(val); 
-                } catch(e) { 
-                    return showStatus(statusEl, 'Invalid URL Format', 'danger'); 
-                }
-                
-                if(val.endsWith('/')) val = val.slice(0, -1);
-                
+
                 try {
+                    new URL(val);
+                } catch(e) {
+                    return showStatus(statusEl, 'Invalid URL Format', 'danger');
+                }
+
+                if(val.endsWith('/')) val = val.slice(0, -1);
+
+                try {
+                    console.log('[demoLink] Attempting Firebase write:', val);
                     await update(ref(db, 'settings'), { demoLink: val });
-                    localStorage.setItem('demo_link', val);
+                    console.log('[demoLink] update() resolved. Verifying with fresh server read...');
+                    let verified = false;
+                    try {
+                        const verifySnap = await get(ref(db, 'settings/demoLink'));
+                        verified = verifySnap.exists() && String(verifySnap.val()) === String(val);
+                        console.log('[demoLink] Read-back exists:', verifySnap.exists(), 'value:', verifySnap.val(), 'matches:', verified);
+                    } catch(verifyErr) {
+                        console.error('[demoLink] Read-back failed:', verifyErr);
+                        showStatus(statusEl, 'Save may have failed — Firebase read-back error: ' + (verifyErr.message || verifyErr.code || 'unknown'), 'danger');
+                        return;
+                    }
                     await loadDemoLinkData();
-                    showStatus(statusEl, 'Web Link Successfully Saved & Applied!', 'success');
+                    if (verified) {
+                        showStatus(statusEl, 'Web Link Successfully Saved & Applied!', 'success');
+                    } else {
+                        console.error('[demoLink] Verification mismatch: value not present in Firebase after save.');
+                        showStatus(statusEl, 'Save FAILED: value did not persist to Firebase (write rejected by database rules or overwritten). Check console for details.', 'danger', 0);
+                    }
                 } catch (err) {
                     console.error('Firebase demoLink save failed:', err);
                     showStatus(statusEl, 'FIREBASE SAVE FAILED: ' + (err.message || 'Permission denied — check database rules for the settings node.'), 'danger');
@@ -1414,16 +1443,21 @@
         if(getElement('clearDemoLinkBtn')) {
             getElement('clearDemoLinkBtn').onclick = async () => {
                 let statusEl = getElement('demoLinkStatus');
-                let hasLink = localStorage.getItem('demo_link');
-                if(!hasLink) {
+                try {
                     const snap = await get(ref(db, 'settings/demoLink'));
-                    if (!snap.exists()) return showStatus(statusEl, 'No active link to remove.', 'warning');
-                }
-                if(confirm('Are you certain? Demos and referral links will cease functioning across the user panel.')) {
-                    localStorage.removeItem('demo_link');
-                    await remove(ref(db, 'settings/demoLink'));
-                    await loadDemoLinkData();
-                    showStatus(statusEl, 'Link permanently removed.', 'success');
+                    if (!snap.exists()) {
+                        localStorage.removeItem('demo_link');
+                        return showStatus(statusEl, 'No active link to remove.', 'warning');
+                    }
+                    if(confirm('Are you certain? Demos and referral links will cease functioning across the user panel.')) {
+                        localStorage.removeItem('demo_link');
+                        await update(ref(db, 'settings'), { demoLink: null });
+                        await loadDemoLinkData();
+                        showStatus(statusEl, 'Link permanently removed.', 'success');
+                    }
+                } catch (err) {
+                    console.error('Firebase demoLink delete failed:', err);
+                    showStatus(statusEl, 'FIREBASE DELETE FAILED: ' + (err.message || 'Permission denied — check database rules for the settings node.'), 'danger');
                 }
             };
         }
