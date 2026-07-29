@@ -155,6 +155,7 @@
                         <div class="text-uppercase text-secondary small fw-bold px-4 pt-3 pb-2 mt-2" style="letter-spacing: 0.1em;">Match Ops</div>
                         <li class="nav-item"> <a class="nav-link" data-section="room-mgt-section"><i class="bi bi-key-fill"></i> Room ID Manager</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-section="results-section"><i class="bi bi-trophy-fill"></i> Upload Results</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-section="create-tournament-section"><i class="bi bi-plus-square-fill"></i> Create Tournament</a> </li>
                     </div>
 
                     <div id="nav-finance" style="display: none;">
@@ -224,6 +225,18 @@
                         </div>
                         <div class="text-end"><button class="btn btn-success btn-lg px-5 shadow-lg" id="creditWinningsBtn"><i class="bi bi-check2-all"></i> Submit & Process Payouts</button></div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Create Tournament Section -->
+            <section id="create-tournament-section" class="section">
+                <h2 class="section-title">Active Tournaments</h2>
+                <div class="card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                        <p class="text-secondary m-0">Create and manage matches. Saved matches appear instantly in the player app.</p>
+                        <button class="btn btn-primary" id="addNewTournamentBtn"><i class="bi bi-plus-lg"></i> Create Match</button>
+                    </div>
+                    <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Title</th><th>Game</th><th>Entry</th><th>Pool</th><th>Date</th><th>Status</th><th>Filled</th><th>Actions</th></tr></thead><tbody id="tournamentsTableBody"></tbody></table></div>
                 </div>
             </section>
 
@@ -303,6 +316,41 @@
         </div>
     </div>
 
+    <!-- Tournament Modal -->
+    <div class="modal fade" id="addTournamentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"> <h5 class="modal-title">Match Specifications</h5> <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> </div>
+                <div class="modal-body p-4">
+                    <form id="tournamentForm">
+                        <input type="hidden" id="tournamentEditId">
+                        <div class="row g-3">
+                            <div class="col-md-6"> <label class="form-label">Game Target</label> <select class="form-select" id="tournamentGame" required></select> </div>
+                            <div class="col-md-6"> <label class="form-label">Match Name</label> <input type="text" class="form-control" id="tournamentName" required> </div>
+                            <div class="col-md-6"> <label class="form-label">Tournament ID</label> <input type="text" class="form-control" id="tournamentId" placeholder="AX1001"> </div>
+                            <div class="col-md-6"> <label class="form-label">Map</label> <select class="form-select" id="tournamentMap"><option value="">Select Map</option><option value="Bermuda">Bermuda</option><option value="Purgatory">Purgatory</option><option value="Alpine">Alpine</option><option value="Nexterra">Nexterra</option><option value="Kalahari">Kalahari</option></select> </div>
+                            <div class="col-md-6"> <label class="form-label">Schedule</label> <input type="datetime-local" class="form-control" id="tournamentStartTime" required> </div>
+                            <div class="col-md-6"> <label class="form-label">State</label> <select class="form-select" id="tournamentStatus" required> <option value="upcoming">Upcoming</option> <option value="ongoing">Live (Ongoing)</option> <option value="completed">Finished</option> <option value="result">Payouts Done (Result)</option> <option value="cancelled">Cancelled</option> </select> </div>
+                            <div class="col-md-3"> <label class="form-label">Entry Fee (₹)</label> <input type="number" class="form-control" id="tournamentEntryFee" min="0" value="0" required> </div>
+                            <div class="col-md-3"> <label class="form-label">Total Pool (₹)</label> <input type="number" class="form-control" id="tournamentPrizePool" min="0" value="0"> </div>
+                            <div class="col-md-3"> <label class="form-label">Per Kill (₹)</label> <input type="number" class="form-control" id="tournamentPerKill" min="0" value="0"> </div>
+                            <div class="col-md-3"> <label class="form-label">Max Capacity</label> <input type="number" class="form-control" id="tournamentMaxPlayers" min="0" value="0" placeholder="0 = Unltd"> </div>
+                            <div class="col-md-6"> <label class="form-label">Tournament Category</label> <select class="form-select" id="tournamentCategory"><option value="">None (Default)</option><option value="Clash Squad">Clash Squad</option><option value="Lone Wolf">Lone Wolf</option><option value="Full Map">Full Map</option><option value="Survival">Survival</option><option value="Only Head">Only Head</option><option value="Night Mode">Night Mode</option><option value="Custom">Custom</option></select> </div>
+                            <div class="col-md-6"> <label class="form-label">Match Type</label> <select class="form-select" id="tournamentMode"><option value="Solo">Solo</option><option value="Duo">Duo</option><option value="Squad">Squad</option></select> </div>
+                            <div class="col-md-6"> <label class="form-label">Labels / Tags</label> <input type="text" class="form-control" id="tournamentTags" placeholder="Erangel, TPP, No Hacks"> </div>
+                            <div class="col-12"> <label class="form-label">Header Banner URL</label> <input type="url" class="form-control" id="tournamentBannerUrl"> </div>
+                            <div class="col-12"> <label class="form-label">Rules & Details</label> <textarea class="form-control" id="tournamentDescription" rows="3"></textarea> </div>
+                            <div class="col-md-5"> <label class="form-label text-warning">Room ID</label> <input type="text" class="form-control" id="tournamentRoomId"> </div>
+                            <div class="col-md-4"> <label class="form-label text-warning">Room Password</label> <input type="text" class="form-control" id="tournamentRoomPassword"> </div>
+                            <div class="col-md-3 d-flex align-items-end pb-2"> <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="tournamentShowIdPass"> <label class="form-check-label text-warning fw-bold ms-1" for="tournamentShowIdPass"> Reveal</label></div> </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-dark border-0"> <button type="button" class="btn btn-primary px-4" id="saveTournamentBtn">Save Match</button> </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Image View Modal -->
     <div class="modal fade" id="imageModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -358,14 +406,15 @@
         // ==========================================
         // FIREBASE CONFIGURATION
         // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDJ0nSLIeDzO-PkAH_CIXIyap-oDDY8ue0",
-            authDomain: "auraapp-65301.firebaseapp.com",
-            databaseURL: "https://auraapp-65301-default-rtdb.firebaseio.com",
-            projectId: "auraapp-65301",
-            storageBucket: "auraapp-65301.firebasestorage.app",
-            messagingSenderId: "724339614365",
-            appId: "1:724339614365:web:c0d42f72f75fe5b0892a74"
+       const firebaseConfig = {
+  apiKey: "AIzaSyBz2EQwxcMTu8AsmL0sBZqj0mo2zeZRoS8",
+  authDomain: "kaling-game.firebaseapp.com",
+  databaseURL: "https://kaling-game-default-rtdb.firebaseio.com",
+  projectId: "kaling-game",
+  storageBucket: "kaling-game.firebasestorage.app",
+  messagingSenderId: "40298906254",
+  appId: "1:40298906254:web:7ba0dc200e6407bde3bfdf",
+  measurementId: "G-6F5Q85YX4S"
         };
         
         const app = initializeApp(firebaseConfig);
@@ -378,6 +427,8 @@
         let userDataCache = {}; // FAST ON-DEMAND CACHE
         let currentWithdrawalAction = { id: null, userId: null };
         let isManualLogin = false; // PREVENTS LOGIN DOUBLE TRIGGER BUG
+        let currentEditingTournamentId = null; // CREATE vs EDIT mode for the tournament modal
+        let gameDataCache = {}; // {gameId: gameName} used to populate the Game Target dropdown
 
         // UI Helpers
         const getEl = id => document.getElementById(id);
@@ -396,7 +447,8 @@
             room: safeModal('roomModal'),
             image: safeModal('imageModal'),
             reply: safeModal('replyModal'),
-            withdrawal: safeModal('withdrawalActionModal')
+            withdrawal: safeModal('withdrawalActionModal'),
+            tournament: safeModal('addTournamentModal')
         };
 
         // Section Router
@@ -561,6 +613,7 @@
             if(sec === 'dashboard-section') loadDashboard();
             if(sec === 'room-mgt-section') loadRooms();
             if(sec === 'results-section') loadTournamentResultsData();
+            if(sec === 'create-tournament-section') loadTournaments();
             if(sec === 'deposits-section') loadPendingDeposits();
             if(sec === 'withdrawals-section') loadPendingWithdrawals();
             if(sec === 'support-section') loadSupportTickets();
@@ -730,6 +783,129 @@
                 getEl('resultTournamentSelect').dispatchEvent(new Event('change')); 
             } catch(e){ alert("Error processing payouts"); }
             finally { showLoader(false); }
+        };
+
+        // ==========================================
+        // MODULE 3.5: CREATE TOURNAMENT (ported from Admin.html)
+        // Same Firebase path (`tournaments`), same object schema, same validation,
+        // same create/update logic as the Admin panel — fully compatible with index.html.
+        // ==========================================
+
+        // Fills gameDataCache from `games/` (mirrors Admin's loadGames, scoped to tournaments)
+        async function loadGamesForTournament() {
+            const snap = await get(ref(db, 'games'));
+            gameDataCache = {};
+            if (snap.exists()) { snap.forEach(c => { gameDataCache[c.key] = c.val().name; }); }
+        }
+
+        // Populates the Game Target dropdown (mirrors Admin's populateGameSelect)
+        function populateGameSelect(selId='') {
+            let h = '<option value="">Select Target Game</option>';
+            for (const [id, name] of Object.entries(gameDataCache)) {
+                h += `<option value="${id}" ${selId===id?'selected':''}>${name}</option>`;
+            }
+            getEl('tournamentGame').innerHTML = h;
+        }
+
+        // Converts an epoch ms timestamp into a datetime-local input value (mirrors Admin's toDatetimeLocal)
+        function toDatetimeLocal(ts) {
+            if(!ts) return '';
+            const d = new Date(ts);
+            return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        }
+
+        // Loads & renders the tournaments list (mirrors Admin's loadTournaments, minus Del/Players actions)
+        async function loadTournaments() {
+            if (Object.keys(gameDataCache).length === 0) await loadGamesForTournament();
+            try {
+                const snap = await get(ref(db, 'tournaments'));
+                let h = '';
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        const t = c.val();
+                        h += `<tr><td class="fw-bold">${t.name}</td><td>${gameDataCache[t.gameId]||'Unknown'}</td><td class="text-success">₹${t.entryFee}</td><td class="text-warning">₹${t.prizePool}</td><td>${formatDate(t.startTime)}</td><td><span class="badge bg-secondary">${t.status}</span></td><td>${t.registeredPlayers?Object.keys(t.registeredPlayers).length:0}/${t.maxPlayers||'∞'}</td><td><button class="btn btn-sm btn-info text-white" data-action="edit-tour" data-id="${c.key}">Edit</button></td></tr>`;
+                    });
+                }
+                getEl('tournamentsTableBody').innerHTML = h || '<tr><td colspan="8" class="text-secondary">No tournaments yet. Click "Create Match" to add one.</td></tr>';
+            } catch (e) {
+                console.error('loadTournaments error', e);
+                getEl('tournamentsTableBody').innerHTML = '<tr><td colspan="8" class="text-danger">Failed to load tournaments.</td></tr>';
+            }
+        }
+
+        // Open the modal in CREATE mode (mirrors Admin's addNewTournamentBtn handler)
+        getEl('addNewTournamentBtn').onclick = async () => {
+            currentEditingTournamentId = null;
+            getEl('tournamentEditId').value = '';
+            if (Object.keys(gameDataCache).length === 0) await loadGamesForTournament();
+            populateGameSelect();
+            getEl('tournamentForm').reset();
+            modals.tournament.show();
+        };
+
+        // SAVE / CREATE / UPDATE handler (mirrors Admin's saveTournamentBtn handler, incl. derived fields)
+        getEl('saveTournamentBtn').onclick = async () => {
+            showLoader(true);
+            try {
+                let tc = 0, ppt = 0;
+                const cat = (getEl('tournamentCategory').value || '').toLowerCase();
+                const md = (getEl('tournamentMode').value || '').toLowerCase();
+
+                if (cat === 'clash squad') {
+                    if (md === 'solo') { tc = 2; ppt = 1; }
+                    else if (md === 'duo') { tc = 2; ppt = 2; }
+                    else if (md === 'squad') { tc = 2; ppt = 4; }
+                    else { tc = 2; ppt = 1; }
+                } else if (cat === 'lone wolf') {
+                    if (md === 'solo') { tc = 2; ppt = 1; }
+                    else if (md === 'duo') { tc = 2; ppt = 2; }
+                    else { tc = 2; ppt = 1; }
+                } else {
+                    if (md === 'solo') { tc = 48; ppt = 1; }
+                    else if (md === 'duo') { tc = 24; ppt = 2; }
+                    else if (md === 'squad') { tc = 12; ppt = 4; }
+                    else { tc = 48; ppt = 1; }
+                }
+
+                const data = {
+                    gameId: getEl('tournamentGame').value,
+                    name: getEl('tournamentName').value,
+                    tournamentId: getEl('tournamentId').value,
+                    map: getEl('tournamentMap').value,
+                    startTime: new Date(getEl('tournamentStartTime').value).getTime(),
+                    status: getEl('tournamentStatus').value,
+                    entryFee: Number(getEl('tournamentEntryFee').value),
+                    prizePool: Number(getEl('tournamentPrizePool').value),
+                    perKillPrize: Number(getEl('tournamentPerKill').value),
+                    maxPlayers: Number(getEl('tournamentMaxPlayers').value),
+                    category: getEl('tournamentCategory').value,
+                    mode: getEl('tournamentMode').value,
+                    tags: getEl('tournamentTags').value.split(','),
+                    bannerUrl: getEl('tournamentBannerUrl').value,
+                    description: getEl('tournamentDescription').value,
+                    roomId: getEl('tournamentRoomId').value,
+                    roomPassword: getEl('tournamentRoomPassword').value,
+                    showIdPass: getEl('tournamentShowIdPass').checked,
+                    teamCount: tc,
+                    playersPerTeam: ppt
+                };
+
+                if (currentEditingTournamentId) {
+                    await update(ref(db, `tournaments/${currentEditingTournamentId}`), data);
+                    await logAction(`Updated Match: ${data.name} (${currentEditingTournamentId})`);
+                } else {
+                    const newRef = await push(ref(db, 'tournaments'), data);
+                    await logAction(`Created Match: ${data.name} (${newRef.key})`);
+                }
+
+                modals.tournament.hide();
+                loadTournaments();
+            } catch (e) {
+                console.error('saveTournament error', e);
+                alert("Error saving match. Please try again.");
+            } finally {
+                showLoader(false);
+            }
         };
 
         // ==========================================
@@ -916,6 +1092,33 @@
                     getEl('roomInputPass').value = t.roomPassword || '';
                     getEl('roomInputShow').checked = t.showIdPass || false;
                     if(modals.room) modals.room.show();
+                }
+
+                // Edit Tournament (ports Admin's edit-tour handler — pre-fills the modal for update)
+                if(a === 'edit-tour') {
+                    currentEditingTournamentId = id;
+                    const t = (await get(ref(db, `tournaments/${id}`))).val();
+                    getEl('tournamentEditId').value = id;
+                    getEl('tournamentName').value = t.name;
+                    getEl('tournamentId').value = t.tournamentId || '';
+                    getEl('tournamentMap').value = t.map || '';
+                    getEl('tournamentStartTime').value = toDatetimeLocal(t.startTime);
+                    getEl('tournamentStatus').value = t.status || 'upcoming';
+                    getEl('tournamentEntryFee').value = t.entryFee || 0;
+                    getEl('tournamentPrizePool').value = t.prizePool || 0;
+                    getEl('tournamentPerKill').value = t.perKillPrize || 0;
+                    getEl('tournamentMaxPlayers').value = t.maxPlayers || 0;
+                    getEl('tournamentCategory').value = t.category || '';
+                    getEl('tournamentMode').value = t.mode || 'Solo';
+                    getEl('tournamentTags').value = t.tags ? t.tags.join(',') : '';
+                    getEl('tournamentBannerUrl').value = t.bannerUrl || '';
+                    getEl('tournamentDescription').value = t.description || '';
+                    getEl('tournamentRoomId').value = t.roomId || '';
+                    getEl('tournamentRoomPassword').value = t.roomPassword || '';
+                    getEl('tournamentShowIdPass').checked = t.showIdPass || false;
+                    if (Object.keys(gameDataCache).length === 0) await loadGamesForTournament();
+                    populateGameSelect(t.gameId);
+                    if(modals.tournament) modals.tournament.show();
                 }
 
                 // View Image
