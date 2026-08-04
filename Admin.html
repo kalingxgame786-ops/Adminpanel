@@ -206,6 +206,129 @@
             30% { height: 12px; opacity: 1; transform: translateY(6px); }
             100% { height: 2px; opacity: 0; transform: translateY(45px); }
         }
+
+        /* ============================================================ */
+        /* === MATCH RESULT (from result.html) — scoped to section === */
+        /* ============================================================ */
+        #tournament-management-section {
+            --mr-purple: #7c3aed; --mr-purple-hover: #6d28d9; --mr-green: #10b981; --mr-green-hover: #059669;
+            --mr-red: #ef4444; --mr-yellow: #f59e0b; --mr-blue: #3b82f6;
+            --mr-card-bg: rgba(22, 27, 40, 0.7); --mr-card-border: rgba(255, 255, 255, 0.05);
+            --mr-text-main: #f1f5f9; --mr-text-muted: #94a3b8;
+            --mr-br: 12px; --mr-br-lg: 16px; --mr-tx: all 0.3s ease;
+        }
+        #tournament-management-section .text-purple { color: var(--mr-purple); }
+        #tournament-management-section .text-green { color: var(--mr-green); }
+        #tournament-management-section .text-red { color: var(--mr-red); }
+        #tournament-management-section .text-yellow { color: var(--mr-yellow); }
+        #tournament-management-section .text-blue { color: var(--mr-blue); }
+        #tournament-management-section .text-gray { color: var(--mr-text-muted); }
+        #tournament-management-section .fs-large { font-size: 1.25rem; }
+        #tournament-management-section .mt-20 { margin-top: 20px; }
+
+        #tournament-management-section .mr-glass {
+            background: var(--mr-card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--mr-card-border); border-radius: var(--mr-br-lg);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); padding: 20px; margin-bottom: 20px;
+        }
+        /* Tournament info card */
+        #tournament-management-section .tourney-info { display: flex; flex-direction: column; gap: 20px; }
+        #tournament-management-section .tourney-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--mr-card-border); padding-bottom: 16px; }
+        #tournament-management-section .tourney-title-group { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+        #tournament-management-section .tourney-logo { width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; font-style: italic; color: #000; flex-shrink: 0; }
+        #tournament-management-section .info-block { display: flex; flex-direction: column; gap: 4px; }
+        #tournament-management-section .info-block .label, #tournament-management-section .match-status .label { font-size: 0.75rem; color: var(--mr-text-muted); }
+        #tournament-management-section .info-block .value { font-weight: 600; font-size: 0.95rem; }
+        #tournament-management-section .match-status { display: flex; align-items: center; gap: 12px; background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); padding: 10px 16px; border-radius: var(--mr-br); }
+        #tournament-management-section .match-status .value { color: var(--mr-text-main); font-weight: 600; }
+        #tournament-management-section .tourney-stats { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        #tournament-management-section .stat-box { display: flex; align-items: center; gap: 12px; }
+        #tournament-management-section .stat-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--mr-card-border); }
+        #tournament-management-section .stat-icon.green { color: var(--mr-green); border-color: rgba(16,185,129,0.2); }
+        #tournament-management-section .stat-icon.blue { color: var(--mr-blue); border-color: rgba(59,130,246,0.2); }
+        #tournament-management-section .stat-icon.purple { color: var(--mr-purple); border-color: rgba(124,58,237,0.2); }
+        #tournament-management-section .stat-icon.red { color: var(--mr-red); border-color: rgba(239,68,68,0.2); }
+        #tournament-management-section .stat-icon.yellow { color: var(--mr-yellow); border-color: rgba(245,158,11,0.2); }
+        #tournament-management-section .stat-details { display: flex; flex-direction: column; }
+        #tournament-management-section .stat-details .label { font-size: 0.75rem; color: var(--mr-text-muted); }
+        #tournament-management-section .stat-details .value { font-weight: 600; font-size: 1rem; }
+
+        /* Main grid + section title */
+        #tournament-management-section .main-layout { display: grid; grid-template-columns: 2.3fr 1fr; gap: 20px; }
+        @media (max-width: 1100px) { #tournament-management-section .main-layout { grid-template-columns: 1fr; } }
+        #tournament-management-section .mr-section-title { font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; color: var(--mr-text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* Distribution settings */
+        #tournament-management-section .settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 820px) { #tournament-management-section .settings-grid { grid-template-columns: 1fr; } }
+        #tournament-management-section .setting-box { background: rgba(0,0,0,0.2); border: 1px solid var(--mr-card-border); border-radius: var(--mr-br); padding: 16px; display: flex; flex-direction: column; }
+        #tournament-management-section .setting-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
+        #tournament-management-section .setting-title { font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        #tournament-management-section .toggle-switch { display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; }
+        #tournament-management-section .toggle-label { font-size: 0.75rem; font-weight: 600; color: var(--mr-green); }
+        #tournament-management-section .toggle-switch input { display: none; }
+        #tournament-management-section .slider { width: 44px; height: 24px; background-color: #374151; border-radius: 34px; position: relative; transition: var(--mr-tx); flex-shrink: 0; }
+        #tournament-management-section .slider::before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: var(--mr-tx); }
+        #tournament-management-section .toggle-switch input:checked + .slider { background-color: var(--mr-green); }
+        #tournament-management-section .toggle-switch input:checked + .slider::before { transform: translateX(20px); }
+        #tournament-management-section .input-label { font-size: 0.8rem; color: var(--mr-text-muted); margin-bottom: 6px; }
+        #tournament-management-section .input-wrapper { position: relative; display: flex; align-items: center; background: #0f131a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+        #tournament-management-section .currency { padding: 10px 12px; color: var(--mr-text-muted); background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.1); }
+        #tournament-management-section .input-wrapper input { background: transparent; border: none; color: var(--mr-text-main); padding: 10px; width: 100%; font-size: 1rem; font-weight: 500; outline: none; }
+        #tournament-management-section .input-wrapper input[type="number"]::-webkit-inner-spin-button,
+        #tournament-management-section .input-wrapper input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        #tournament-management-section .helper-text { font-size: 0.75rem; color: var(--mr-text-muted); line-height: 1.4; }
+        #tournament-management-section .warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: 8px; display: flex; gap: 8px; font-size: 0.75rem; color: var(--mr-yellow); margin-top: 10px; align-items: flex-start; }
+
+        /* Tabs + table */
+        #tournament-management-section .tabs { display: flex; gap: 4px; margin-bottom: -1px; position: relative; z-index: 2; }
+        #tournament-management-section .tab-btn { background: rgba(0,0,0,0.3); border: 1px solid var(--mr-card-border); border-bottom: none; padding: 14px 24px; border-radius: 12px 12px 0 0; color: var(--mr-text-muted); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: var(--mr-tx); }
+        #tournament-management-section .tab-btn.active { background: var(--mr-card-bg); color: var(--mr-text-main); box-shadow: inset 0 2px 0 var(--mr-purple); }
+        #tournament-management-section .table-card { border-top-left-radius: 0; padding: 0; overflow: hidden; }
+        #tournament-management-section .table-controls { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 12px; border-bottom: 1px solid var(--mr-card-border); flex-wrap: wrap; }
+        #tournament-management-section .mr-search-box { position: relative; width: 250px; }
+        #tournament-management-section .mr-search-box input { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--mr-card-border); padding: 8px 16px; border-radius: 6px; color: var(--mr-text-main); outline: none; }
+        #tournament-management-section .mr-table-wrap { width: 100%; overflow-x: auto; }
+        #tournament-management-section .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        #tournament-management-section .data-table th, #tournament-management-section .data-table td { padding: 14px 20px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.02); white-space: nowrap; }
+        #tournament-management-section .data-table th { background: rgba(0,0,0,0.2); color: var(--mr-text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        #tournament-management-section .data-table th small { display: block; font-size: 0.65rem; opacity: 0.7; margin-top: 2px; }
+        #tournament-management-section .data-table tbody tr { transition: var(--mr-tx); }
+        #tournament-management-section .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+        #tournament-management-section .highlight-row { background: linear-gradient(90deg, rgba(124,58,237,0.1) 0%, transparent 100%); }
+        #tournament-management-section .ign-cell { display: flex; align-items: center; gap: 10px; }
+        #tournament-management-section .table-input { width: 60px; background: #0f131a; border: 1px solid var(--mr-card-border); color: var(--mr-text-main); padding: 6px 10px; border-radius: 6px; text-align: center; outline: none; transition: var(--mr-tx); }
+        #tournament-management-section .table-input:focus { border-color: var(--mr-purple); }
+        #tournament-management-section .table-footer { padding: 16px 20px; font-size: 0.8rem; color: var(--mr-text-muted); border-top: 1px solid var(--mr-card-border); }
+
+        /* Action buttons + right panel */
+        #tournament-management-section .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+        @media (max-width: 720px) { #tournament-management-section .action-buttons { grid-template-columns: 1fr; } }
+        #tournament-management-section .mr-btn { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: var(--mr-br); border: none; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: var(--mr-tx); color: white; justify-content: center; }
+        #tournament-management-section .action-buttons .mr-btn { justify-content: center; padding: 14px; border-radius: var(--mr-br); }
+        #tournament-management-section .btn-text { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        #tournament-management-section .btn-text strong { font-size: 0.95rem; }
+        #tournament-management-section .btn-text span { font-size: 0.7rem; opacity: 0.8; font-weight: 400; }
+        #tournament-management-section .btn-dark { background: rgba(255,255,255,0.05); border: 1px solid var(--mr-card-border); }
+        #tournament-management-section .btn-dark:hover { background: rgba(255,255,255,0.1); }
+        #tournament-management-section .btn-purple { background: linear-gradient(135deg, var(--mr-purple), var(--mr-purple-hover)); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+        #tournament-management-section .btn-purple:hover { box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6); transform: translateY(-2px); }
+        #tournament-management-section .btn-green { background: linear-gradient(135deg, var(--mr-green), var(--mr-green-hover)); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        #tournament-management-section .btn-green:hover { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); transform: translateY(-2px); }
+        #tournament-management-section .btn-outline { background: transparent; border: 1px solid var(--mr-card-border); color: var(--mr-text-muted); padding: 8px 16px; }
+        #tournament-management-section .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        #tournament-management-section .summary-list { list-style: none; padding: 0; margin: 0; }
+        #tournament-management-section .summary-list li { display: flex; justify-content: space-between; padding: 12px 0; font-size: 0.9rem; }
+        #tournament-management-section .summary-list .label { color: var(--mr-text-muted); }
+        #tournament-management-section .summary-list .value { font-weight: 500; }
+        #tournament-management-section .summary-list .divider { height: 1px; background: var(--mr-card-border); margin: 4px 0; padding: 0; }
+        #tournament-management-section .profit-row { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 16px !important; margin-top: 10px; align-items: center; }
+        #tournament-management-section .profit-row .label { color: var(--mr-text-main); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        #tournament-management-section .profit-formula { display: flex; gap: 12px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; margin-top: 16px; font-size: 0.8rem; color: var(--mr-green); align-items: flex-start; }
+        #tournament-management-section .note-box { display: flex; gap: 10px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 12px; border-radius: 8px; margin-top: 16px; font-size: 0.8rem; color: var(--mr-text-main); line-height: 1.5; }
+        #tournament-management-section .mr-select { background: #0f131a; border: 1px solid rgba(255,255,255,0.1); color: var(--mr-text-main); border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; outline: none; width: 100%; }
+        #tournament-management-section .mr-select:focus { border-color: var(--mr-purple); }
+        /* End Match Result CSS */
     </style>
 </head>
 <body>
@@ -430,15 +553,276 @@
             
             <!-- Tournament Management (Results) Section -->
             <section id="tournament-management-section" class="section">
-                <h2 class="section-title">Declare Winners & Payouts</h2>
-                <div class="card p-4">
-                    <div class="row mb-4"><div class="col-md-6"><label class="form-label">Select Finished Match</label><select class="form-select form-select-lg" id="tmsTournamentSelect"></select></div></div>
-                    <div id="tmsStatus" class="mb-3"></div>
-                    <div id="tmsPlayerListContainer" style="display: none;">
-                        <div class="table-responsive border border-secondary mb-4">
-                            <table class="table table-hover mb-0"><thead><tr><th>Player</th><th>Game UID</th><th>Kill Prize</th><th>Kills</th><th>Bonus (₹)</th><th>Rank</th><th>Total Payout</th></tr></thead><tbody id="tmsPlayerListTableBody"></tbody></table>
+                <h2 class="section-title"><i class="bi bi-trophy-fill text-warning me-2"></i>Price Distribution / Match Result</h2>
+
+                <!-- Match selector -->
+                <div class="mr-glass" style="display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:260px;">
+                        <label class="input-label">Select Finished Match</label>
+                        <select class="mr-select" id="tmsTournamentSelect"></select>
+                    </div>
+                </div>
+                <div id="tmsStatus" style="margin-top:8px;"></div>
+
+                <!-- Tournament Info Card -->
+                <section class="mr-glass tourney-info">
+                    <div class="tourney-header">
+                        <div class="tourney-title-group">
+                            <div class="tourney-logo"><span id="mrLogoLetter">T</span></div>
+                            <div class="info-block">
+                                <span class="label">Tournament Name</span>
+                                <span class="value" id="mrTName">— No match selected —</span>
+                            </div>
+                            <div class="info-block">
+                                <span class="label">Game</span>
+                                <span class="value" id="mrGame">-</span>
+                            </div>
+                            <div class="info-block">
+                                <span class="label">Mode</span>
+                                <span class="value" id="mrMode">-</span>
+                            </div>
+                            <div class="info-block">
+                                <span class="label">Match ID</span>
+                                <span class="value" id="mrMatchId">-</span>
+                            </div>
                         </div>
-                        <div class="text-end"><button class="btn btn-success btn-lg px-5" id="creditWinningsBtn"><i class="bi bi-check2-all"></i> Process All Payouts</button></div>
+                        <div class="match-status">
+                            <div>
+                                <span class="label">Match Status</span>
+                                <span class="value" id="mrStatus">-</span>
+                            </div>
+                            <i class="bi bi-check-circle-fill text-purple"></i>
+                        </div>
+                    </div>
+                    <div class="tourney-stats">
+                        <div class="stat-box">
+                            <div class="stat-icon green"><i class="bi bi-currency-rupee"></i></div>
+                            <div class="stat-details"><span class="label">Entry Fee</span><span class="value" id="mrEntryFee">₹ 0</span></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
+                            <div class="stat-details"><span class="label">Total Players</span><span class="value" id="mrPlayers">0</span></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon purple"><i class="bi bi-trophy-fill"></i></div>
+                            <div class="stat-details"><span class="label">Prize Pool (Total Collection)</span><span class="value" id="mrPrizePool">₹ 0.00</span></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon red"><i class="bi bi-crosshair"></i></div>
+                            <div class="stat-details"><span class="label">Per Kill Reward</span><span class="value" id="mrPerKill">₹ 0</span></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon yellow"><i class="bi bi-map-fill"></i></div>
+                            <div class="stat-details"><span class="label">Map</span><span class="value" id="mrMap">-</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Content Layout -->
+                <main class="main-layout">
+
+                    <!-- Left Panel -->
+                    <div class="left-panel">
+
+                        <!-- Distribution Settings -->
+                        <div class="mr-glass">
+                            <h2 class="mr-section-title"><i class="bi bi-gear-fill"></i> DISTRIBUTION SETTINGS</h2>
+
+                            <div class="settings-grid">
+                                <div class="setting-box">
+                                    <div class="setting-header">
+                                        <span class="setting-title"><i class="bi bi-trophy-fill text-yellow"></i> Placement Prize</span>
+                                        <label class="toggle-switch">
+                                            <span class="toggle-label">ON</span>
+                                            <input type="checkbox" checked id="togglePlacement">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <label class="input-label">Placement Prize Pool</label>
+                                    <div class="input-wrapper">
+                                        <span class="currency">₹</span>
+                                        <input type="number" id="placementPool" value="0">
+                                    </div>
+                                    <p class="helper-text">Total amount that will be distributed on the basis of placement.</p>
+                                </div>
+
+                                <div class="setting-box">
+                                    <div class="setting-header">
+                                        <span class="setting-title"><i class="bi bi-crosshair text-red"></i> Kill Reward</span>
+                                        <label class="toggle-switch">
+                                            <span class="toggle-label">ON</span>
+                                            <input type="checkbox" checked id="toggleKill">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <label class="input-label">Per Kill Amount</label>
+                                    <div class="input-wrapper">
+                                        <span class="currency">₹</span>
+                                        <input type="number" id="perKillAmount" value="0">
+                                    </div>
+                                    <p class="helper-text">Amount given for each kill by a player.</p>
+                                </div>
+
+                                <div class="setting-box">
+                                    <div class="setting-header">
+                                        <span class="setting-title"><i class="bi bi-calculator text-blue"></i> Auto Calculation</span>
+                                        <label class="toggle-switch">
+                                            <span class="toggle-label">ON</span>
+                                            <input type="checkbox" checked id="toggleAuto">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="helper-text">System will auto calculate all prizes based on settings.</p>
+                                    <div class="warning-box">
+                                        <i class="bi bi-exclamation-circle-fill text-yellow"></i>
+                                        <span>You can turn ON/OFF any distribution type. Only enabled items will be paid.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabs & Results Table -->
+                        <div class="results-section">
+                            <div class="tabs">
+                                <button class="tab-btn active">BATTLE ROYALE RESULT</button>
+                                <button class="tab-btn">CLASH SQUAD RESULT</button>
+                            </div>
+
+                            <div class="mr-glass table-card">
+                                <div class="table-controls">
+                                    <div class="mr-search-box">
+                                        <input type="text" placeholder="Search by IGN / UID" id="mrSearch">
+                                    </div>
+                                    <button class="mr-btn btn-outline" disabled><i class="bi bi-funnel-fill"></i> Filter</button>
+                                </div>
+
+                                <div class="mr-table-wrap">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>IGN</th>
+                                                <th>UID</th>
+                                                <th>PLACE <small>(Editable)</small></th>
+                                                <th>KILLS <small>(Editable)</small></th>
+                                                <th>PLACEMENT PRIZE <small>(Auto)</small></th>
+                                                <th>KILL PRIZE <small>(Auto)</small></th>
+                                                <th>TOTAL PRIZE <small>(Auto)</small></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="playerTable">
+                                            <tr><td colspan="8" class="text-gray" style="text-align:center;">Select a match to load players</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-footer">
+                                    <span id="mrTableFoot">Showing 0 players</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="mr-btn btn-dark" id="mrResetBtn"><i class="bi bi-arrow-repeat"></i> Reset Result</button>
+                            <button class="mr-btn btn-purple" id="mrPreviewBtn"><i class="bi bi-eye-fill"></i>
+                                <div class="btn-text">
+                                    <strong>Preview Distribution</strong>
+                                    <span>Check how prizes will be distributed</span>
+                                </div>
+                            </button>
+                            <button class="mr-btn btn-green" id="mrPublishBtn"><i class="bi bi-send-fill"></i>
+                                <div class="btn-text">
+                                    <strong>Publish Result</strong>
+                                    <span>Distribute prizes to players wallet</span>
+                                </div>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Panel -->
+                    <div class="right-panel">
+
+                        <!-- Revenue Summary -->
+                        <div class="mr-glass">
+                            <h2 class="mr-section-title"><i class="bi bi-graph-up-arrow text-blue"></i> REVENUE SUMMARY</h2>
+                            <ul class="summary-list">
+                                <li>
+                                    <span class="label">Total Collection <small id="mrCollNote"></small></span>
+                                    <span class="value" id="sumCollection">₹ 0.00</span>
+                                </li>
+                                <li>
+                                    <span class="label">Placement Distribution</span>
+                                    <span class="value text-purple" id="sumPlacement">₹ 0.00</span>
+                                </li>
+                                <li>
+                                    <span class="label">Kill Distribution</span>
+                                    <span class="value text-red" id="sumKill">₹ 0.00</span>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <span class="label fw-bold">Total Distributed</span>
+                                    <span class="value text-blue fw-bold" id="sumDistributed">₹ 0.00</span>
+                                </li>
+                                <li class="profit-row">
+                                    <span class="label"><i class="bi bi-wallet-fill text-green"></i> Your Profit (Earning)</span>
+                                    <span class="value text-green fw-bold fs-large" id="sumProfit">₹ 0.00</span>
+                                </li>
+                            </ul>
+                            <div class="profit-formula">
+                                <i class="bi bi-gem"></i>
+                                <span>Profit = Collection - Total Distributed<br>(₹ <span id="formColl">0</span> - ₹ <span id="formDist">0</span> = ₹ <span id="formProf">0</span>)</span>
+                            </div>
+                        </div>
+
+                        <!-- Distribution Quick Info -->
+                        <div class="mr-glass mt-20">
+                            <h2 class="mr-section-title"><i class="bi bi-pie-chart-fill text-purple"></i> DISTRIBUTION QUICK INFO</h2>
+                            <ul class="summary-list">
+                                <li>
+                                    <span class="label">Live Total Kills</span>
+                                    <span class="value fw-bold" id="infoTotalKills">0</span>
+                                </li>
+                                <li>
+                                    <span class="label">Kill Distribution</span>
+                                    <span class="value"><span id="infoKillFormula">0 × ₹0</span> = <span id="infoKillTotal">₹0</span></span>
+                                </li>
+                                <li>
+                                    <span class="label">Placement Pool</span>
+                                    <span class="value" id="infoPlacePool">₹ 0</span>
+                                </li>
+                                <li>
+                                    <span class="label">Total Distributed</span>
+                                    <span class="value" id="infoTotalDist">₹ 0</span>
+                                </li>
+                                <li>
+                                    <span class="label">Remaining (Profit)</span>
+                                    <span class="value" id="infoRemProfit">₹ 0</span>
+                                </li>
+                            </ul>
+                            <div class="note-box">
+                                <i class="bi bi-info-circle-fill text-blue"></i>
+                                <span><strong>Note:</strong> If Placement Prize is OFF, its pool will be added to your profit.</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+
+                <!-- Preview Modal -->
+                <div class="modal fade" id="tmsPreviewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="bi bi-clipboard-check text-accent me-2"></i>Distribution Preview</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-4" id="tmsPreviewBody"></div>
+                            <div class="modal-footer bg-dark border-0">
+                                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" id="tmsPreviewEditBtn">Edit</button>
+                                <button type="button" class="btn btn-success px-4" id="tmsPreviewPublishBtn"><i class="bi bi-check2-all me-1"></i> Confirm & Publish</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1237,7 +1621,7 @@
                             currentAdminPermissions = staffSnap.val().permissions ||[]; bootPanel(user.email + ' (Staff)');
                         } else { await signOut(auth); }
                     }
-                } catch(e) { await signOut(auth); }
+                } catch(e) { console.error("Auth check error:", e); }
             } else {
                 elements.mainArea.style.display = 'none'; elements.authContainer.style.display = 'flex';
                 const s = await get(ref(db, 'adminConfig')).catch(()=>null);
@@ -1535,7 +1919,10 @@
             showLoader(false); 
         };
 
-                /* --- Match Results (TMS) & Payouts --- */
+                /* --- Match Results (TMS) & Payouts --- (result.html UI integrated) */
+                let tmsCurrentTournament = null; // currently loaded tournament snapshot
+                let tmsLastRendered = []; // [{uid, name, uidShort}] rows currently in the table
+
                 async function populateTournamentManagementSelector() {
                     // Populate the tournament dropdown for Match Results management.
                     // Include all relevant statuses and gracefully handle missing/empty statuses.
@@ -1558,10 +1945,270 @@
                         });
                     }
                     getElement('tmsTournamentSelect').innerHTML = html;
+                    // Reset the info card to its empty state until a match is picked.
+                    tmsResetInfoCard();
                 }
-                getElement('tmsTournamentSelect').onchange = async (e) => { const tid = e.target.value; if(!tid) return getElement('tmsPlayerListContainer').style.display='none'; getElement('tmsPlayerListContainer').style.display='block'; getElement('tmsPlayerListTableBody').innerHTML=tableLoadingPlaceholderHtml(7); const t = (await get(ref(db,`tournaments/${tid}`))).val(); getElement('creditWinningsBtn').disabled=t.winningsCredited; let h=''; if(t.registeredPlayers){ for(const uid of Object.keys(t.registeredPlayers)){ const u=fullUserDataCache[uid]; if(u){ h+=`<tr data-uid="${uid}" data-pk="${t.perKillPrize}"><td>${u.displayName||u.email}</td><td>${u.gameUid||'-'}</td><td>₹${t.perKillPrize}</td><td><input type="number" class="form-control form-control-sm kills-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm extra-input" value="0" ${t.winningsCredited?'disabled':''}></td><td><input type="number" class="form-control form-control-sm rank-input" placeholder="Rank" ${t.winningsCredited?'disabled':''}></td><td class="text-accent fw-bold calc-prize">₹0</td></tr>`; } } } getElement('tmsPlayerListTableBody').innerHTML=h||`<tr><td colspan="7">No players registered</td></tr>`; };
-        getElement('tmsPlayerListTableBody').oninput = e => { if(e.target.tagName==='INPUT'){ const row=e.target.closest('tr'); const pk=row.dataset.pk, k=row.querySelector('.kills-input').value, ex=row.querySelector('.extra-input').value; row.querySelector('.calc-prize').textContent='₹'+((pk*k)+Number(ex)); } };
-        getElement('creditWinningsBtn').onclick = async () => { showLoader(true); const tid = getElement('tmsTournamentSelect').value; const updates = {}; getElement('tmsPlayerListTableBody').querySelectorAll('tr').forEach(r => { const uid = r.dataset.uid; const pk = Number(r.dataset.pk); const k = Number(r.querySelector('.kills-input').value); const ex = Number(r.querySelector('.extra-input').value); const rank = r.querySelector('.rank-input').value; const total = (pk * k) + ex; if(total > 0) { const currWin = fullUserDataCache[uid].winningCash || 0; updates[`users/${uid}/winningCash`] = currWin + total; } updates[`tournaments/${tid}/registeredPlayers/${uid}/kills`] = k; updates[`tournaments/${tid}/registeredPlayers/${uid}/rank`] = rank; updates[`tournaments/${tid}/registeredPlayers/${uid}/prize`] = total; }); updates[`tournaments/${tid}/winningsCredited`] = true; updates[`tournaments/${tid}/status`] = 'result'; await update(ref(db), updates); showStatus(getElement('tmsStatus'), 'Payouts Processed successfully!', 'success'); getElement('tmsTournamentSelect').dispatchEvent(new Event('change')); showLoader(false); };
+
+                // Reset the tournament info card + summary panels to neutral placeholders.
+                function tmsResetInfoCard() {
+                    getElement('mrTName').textContent = '— No match selected —';
+                    getElement('mrGame').textContent = '-';
+                    getElement('mrMode').textContent = '-';
+                    getElement('mrMatchId').textContent = '-';
+                    getElement('mrStatus').textContent = '-';
+                    getElement('mrEntryFee').textContent = '₹ 0';
+                    getElement('mrPlayers').textContent = '0';
+                    getElement('mrPrizePool').textContent = '₹ 0.00';
+                    getElement('mrPerKill').textContent = '₹ 0';
+                    getElement('mrMap').textContent = '-';
+                    getElement('playerTable').innerHTML = `<tr><td colspan="8" class="text-gray" style="text-align:center;">Select a match to load players</td></tr>`;
+                    getElement('mrTableFoot').textContent = 'Showing 0 players';
+                }
+
+                // Main Calculation Function (math kept identical to result.html calculatePrizes()).
+                function calculatePrizes() {
+                    const isPlacementOn = getElement('togglePlacement').checked;
+                    const isKillOn = getElement('toggleKill').checked;
+                    const perKillReward = parseFloat(getElement('perKillAmount').value) || 0;
+                    const placementPool = parseFloat(getElement('placementPool').value) || 0;
+
+                    let totalKills = 0, totalKillPrize = 0, totalPlacementPrize = 0;
+
+                    // Iterate through table rows
+                    document.querySelectorAll('#playerTable tr').forEach(row => {
+                        const killInp = row.querySelector('.kill-input');
+                        const placeInp = row.querySelector('.place-input');
+                        if (!killInp || !placeInp) return; // skip placeholder rows
+                        const kills = parseInt(killInp.value) || 0;
+                        const place = parseInt(placeInp.value) || 0;
+
+                        // Kill prize
+                        let killPrize = 0;
+                        if (isKillOn) killPrize = kills * perKillReward;
+
+                        // Placement prize — result.html logic: #1 gets the whole pool.
+                        let placementPrize = 0;
+                        if (isPlacementOn && place === 1) placementPrize = placementPool;
+
+                        const totalPrize = killPrize + placementPrize;
+
+                        const placeCell = row.querySelector('.placement-prize');
+                        const killCell = row.querySelector('.kill-prize');
+                        const totalCell = row.querySelector('.total-prize');
+                        if (!placeCell || !killCell || !totalCell) return;
+
+                        placeCell.textContent = `₹ ${placementPrize.toFixed(2)}`;
+                        killCell.textContent = `₹ ${killPrize.toFixed(2)}`;
+                        totalCell.textContent = `₹ ${totalPrize.toFixed(2)}`;
+                        placeCell.className = `placement-prize ${placementPrize > 0 ? 'text-green' : 'text-gray'}`;
+                        killCell.className = `kill-prize ${killPrize > 0 ? 'text-yellow' : 'text-gray'}`;
+                        totalCell.className = `total-prize fw-bold ${totalPrize > 0 ? 'text-green' : 'text-gray'}`;
+
+                        totalKills += kills;
+                        totalKillPrize += killPrize;
+                        totalPlacementPrize += placementPrize;
+                    });
+
+                    // Overarching financials
+                    const totalDistributed = totalPlacementPrize + totalKillPrize;
+                    const t = tmsCurrentTournament;
+                    const playerCount = (t && t.registeredPlayers) ? Object.keys(t.registeredPlayers).length : 0;
+                    const collection = (t ? (Number(t.entryFee) || 0) : 0) * playerCount;
+                    const profit = collection - totalDistributed;
+
+                    // Revenue Summary panel
+                    getElement('sumCollection').textContent = `₹ ${collection.toFixed(2)}`;
+                    getElement('mrCollNote').textContent = playerCount ? `( ${playerCount} × ₹ ${Number(t ? t.entryFee : 0) || 0} )` : '';
+                    getElement('sumPlacement').textContent = `₹ ${totalPlacementPrize.toFixed(2)}`;
+                    getElement('sumKill').textContent = `₹ ${totalKillPrize.toFixed(2)}`;
+                    getElement('sumDistributed').textContent = `₹ ${totalDistributed.toFixed(2)}`;
+                    getElement('sumProfit').textContent = `₹ ${profit.toFixed(2)}`;
+                    getElement('formColl').textContent = collection.toFixed(0);
+                    getElement('formDist').textContent = totalDistributed.toFixed(0);
+                    getElement('formProf').textContent = profit.toFixed(0);
+
+                    // Quick Info panel
+                    getElement('infoTotalKills').textContent = totalKills;
+                    getElement('infoKillFormula').textContent = `${totalKills} × ₹${perKillReward}`;
+                    getElement('infoKillTotal').textContent = `₹${totalKillPrize.toFixed(0)}`;
+                    getElement('infoPlacePool').textContent = `₹ ${isPlacementOn ? placementPool : 0}`;
+                    getElement('infoTotalDist').textContent = `₹ ${totalDistributed.toFixed(0)}`;
+                    getElement('infoRemProfit').textContent = `₹ ${profit.toFixed(0)}`;
+                }
+
+                // Attach Event Listeners for live recalculation
+                ['perKillAmount', 'placementPool'].forEach(id => getElement(id).addEventListener('input', calculatePrizes));
+                ['togglePlacement', 'toggleKill'].forEach(id => getElement(id).addEventListener('change', calculatePrizes));
+
+                // Reset Result button — clears kills/placements back to defaults and recalculates.
+                getElement('mrResetBtn').onclick = () => {
+                    document.querySelectorAll('#playerTable tr').forEach(row => {
+                        const k = row.querySelector('.kill-input'); if (k) k.value = 0;
+                        const p = row.querySelector('.place-input'); if (p) p.value = '';
+                    });
+                    calculatePrizes();
+                    showStatus(getElement('tmsStatus'), 'Result inputs reset.', 'info', 2500);
+                };
+
+                // Live table edits (delegated) — recalculates on every kill/placement change.
+                getElement('playerTable').addEventListener('input', (e) => {
+                    if (e.target.classList.contains('kill-input') || e.target.classList.contains('place-input')) calculatePrizes();
+                });
+
+                // Live search filter on the player table.
+                getElement('mrSearch').addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    document.querySelectorAll('#playerTable tr').forEach(row => {
+                        const txt = row.textContent.toLowerCase();
+                        row.style.display = txt.includes(term) ? '' : 'none';
+                    });
+                });
+
+                // Tab Switching Logic (BATTLE ROYALE / CLASH SQUAD) — visual only per result.html.
+                document.querySelectorAll('#tournament-management-section .tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const active = document.querySelector('#tournament-management-section .tab-btn.active');
+                        if (active) active.classList.remove('active');
+                        btn.classList.add('active');
+                    });
+                });
+
+                // Render the tournament info card from the live Firebase snapshot.
+                function tmsRenderInfoCard(t, tid) {
+                    const gameName = (gameDataCache && t.gameId && gameDataCache[t.gameId]) ? gameDataCache[t.gameId] : (t.gameId || 'Game');
+                    getElement('mrLogoLetter').textContent = (t.name || 'T').charAt(0).toUpperCase();
+                    getElement('mrTName').textContent = t.name || '-';
+                    getElement('mrGame').textContent = gameName;
+                    const mode = t.mode ? `${t.category || 'Battle Royale'} (${t.mode})` : (t.category || 'Battle Royale');
+                    getElement('mrMode').textContent = mode;
+                    getElement('mrMatchId').textContent = '#' + (tid || '').slice(-6).toUpperCase();
+                    getElement('mrStatus').textContent = t.status ? (t.status.charAt(0).toUpperCase() + t.status.slice(1)) : '-';
+                    getElement('mrEntryFee').textContent = `₹ ${Number(t.entryFee) || 0}`;
+                    const playerCount = t.registeredPlayers ? Object.keys(t.registeredPlayers).length : 0;
+                    getElement('mrPlayers').textContent = `${playerCount} / ${Number(t.maxPlayers) || playerCount}`;
+                    getElement('mrPrizePool').textContent = `₹ ${Number(t.entryFee || 0) * playerCount || (Number(t.prizePool) || 0)}.00`;
+                    getElement('mrPerKill').textContent = `₹ ${Number(t.perKillPrize) || 0}`;
+                    getElement('mrMap').textContent = t.map || '-';
+                }
+
+                // Match select handler — loads the tournament, renders info card + player table, locks if published.
+                getElement('tmsTournamentSelect').onchange = async (e) => {
+                    const tid = e.target.value;
+                    if (!tid) { tmsResetInfoCard(); return; }
+                    const t = (await get(ref(db, `tournaments/${tid}`))).val();
+                    if (!t) { showStatus(getElement('tmsStatus'), 'Tournament not found.', 'danger'); return; }
+                    tmsCurrentTournament = t;
+                    const locked = !!t.winningsCredited;
+
+                    // Info card
+                    tmsRenderInfoCard(t, tid);
+
+                    // Defaults into distribution settings
+                    getElement('placementPool').value = Number(t.prizePool) || 0;
+                    getElement('perKillAmount').value = Number(t.perKillPrize) || 0;
+                    getElement('togglePlacement').checked = true;
+                    getElement('toggleKill').checked = true;
+                    getElement('toggleAuto').checked = true;
+
+                    // Player table
+                    let h = '';
+                    tmsLastRendered = [];
+                    if (t.registeredPlayers) {
+                        let idx = 0;
+                        for (const uid of Object.keys(t.registeredPlayers)) {
+                            const u = fullUserDataCache[uid];
+                            if (u) {
+                                idx++;
+                                const name = u.displayName || u.email || uid;
+                                const uidShort = String(u.gameUid || uid).slice(0, 14);
+                                const exRank = t.registeredPlayers[uid].rank;
+                                const exKills = t.registeredPlayers[uid].kills;
+                                const highlight = idx === 1 ? ' class="highlight-row"' : '';
+                                tmsLastRendered.push({ uid, name });
+                                h += `<tr data-uid="${uid}"${highlight}>
+                                    <td>${idx}</td>
+                                    <td><div class="ign-cell"><strong>${name}</strong></div></td>
+                                    <td class="text-gray">${uidShort}</td>
+                                    <td><input type="number" class="table-input place-input" value="${exRank || ''}" ${locked ? 'disabled' : ''}></td>
+                                    <td><input type="number" class="table-input kill-input" value="${exKills || 0}" ${locked ? 'disabled' : ''}></td>
+                                    <td class="placement-prize text-gray">₹ 0.00</td>
+                                    <td class="kill-prize text-gray">₹ 0.00</td>
+                                    <td class="total-prize fw-bold text-gray">₹ 0.00</td>
+                                </tr>`;
+                            }
+                        }
+                    }
+                    getElement('playerTable').innerHTML = h || `<tr><td colspan="8" class="text-gray" style="text-align:center;">No players registered</td></tr>`;
+                    getElement('mrTableFoot').textContent = `Showing ${tmsLastRendered.length} players`;
+
+                    // Lock handling
+                    ['togglePlacement', 'toggleKill', 'toggleAuto', 'placementPool', 'perKillAmount'].forEach(id => getElement(id).disabled = locked);
+                    if (locked) {
+                        showStatus(getElement('tmsStatus'), 'This match result is already published.', 'warning');
+                    }
+                    calculatePrizes(); // initial calculation on load
+                };
+
+                // Collect final payouts from the current table state.
+                function tmsCollectPayouts() {
+                    const out = [];
+                    document.querySelectorAll('#playerTable tr[data-uid]').forEach(row => {
+                        const uid = row.dataset.uid;
+                        const kills = parseInt(row.querySelector('.kill-input')?.value) || 0;
+                        const rank = parseInt(row.querySelector('.place-input')?.value) || 0;
+                        const prize = (parseFloat((row.querySelector('.total-prize')?.textContent || '0').replace(/[^\d.-]/g, '')) || 0);
+                        out.push({ uid, kills, rank, prize });
+                    });
+                    return out;
+                }
+
+                // Preview Distribution — opens modal with a recap table.
+                getElement('mrPreviewBtn').onclick = () => {
+                    const payouts = tmsCollectPayouts();
+                    const paying = payouts.filter(p => p.prize > 0);
+                    const total = payouts.reduce((s, p) => s + p.prize, 0);
+                    let h = `<div class="table-responsive"><table class="table table-hover mb-3"><thead><tr><th>Player</th><th>Placement</th><th>Kills</th><th class="text-end">Payout</th></tr></thead><tbody>`;
+                    payouts.forEach(p => {
+                        const u = fullUserDataCache[p.uid] || {};
+                        h += `<tr><td>${u.displayName || u.email || p.uid}</td><td>${p.rank || '-'}</td><td>${p.kills}</td><td class="text-end fw-bold ${p.prize > 0 ? 'text-success' : ''}">₹ ${p.prize.toFixed(2)}</td></tr>`;
+                    });
+                    h += `</tbody></table></div>`;
+                    h += `<div class="d-flex justify-content-between align-items-center px-2"><span class="text-secondary">Total Payout (${paying.length} winners)</span><span class="fw-bold fs-4 text-warning">₹ ${total.toFixed(2)}</span></div>`;
+                    getElement('tmsPreviewBody').innerHTML = h;
+                    getModalInstance(getElement('tmsPreviewModal')).show();
+                };
+
+                // Publish Result — reuses the existing wallet flow + Firebase fan-out (no new architecture).
+                async function tmsDoPublish() {
+                    const tid = getElement('tmsTournamentSelect').value;
+                    if (!tid) { showStatus(getElement('tmsStatus'), 'Please select a match first.', 'danger'); return; }
+                    if (tmsCurrentTournament && tmsCurrentTournament.winningsCredited) {
+                        showStatus(getElement('tmsStatus'), 'Result already published.', 'warning'); return;
+                    }
+                    const payouts = tmsCollectPayouts();
+                    const updates = {};
+                    payouts.forEach(p => {
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/kills`] = p.kills;
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/rank`] = p.rank || null;
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/prize`] = p.prize;
+                        if (p.prize > 0 && fullUserDataCache[p.uid]) {
+                            const currWin = fullUserDataCache[p.uid].winningCash || 0;
+                            updates[`users/${p.uid}/winningCash`] = currWin + p.prize;
+                        }
+                    });
+                    updates[`tournaments/${tid}/winningsCredited`] = true;
+                    updates[`tournaments/${tid}/status`] = 'result';
+                    showLoader(true);
+                    await update(ref(db), updates);
+                    showLoader(false);
+                    getModalInstance(getElement('tmsPreviewModal')).hide();
+                    showStatus(getElement('tmsStatus'), 'Result published & prizes distributed to wallets!', 'success');
+                    getElement('tmsTournamentSelect').dispatchEvent(new Event('change')); // re-lock UI
+                }
+
+                getElement('mrPublishBtn').onclick = () => getElement('mrPreviewBtn').click();
+                if (getElement('tmsPreviewEditBtn')) { getElement('tmsPreviewEditBtn').onclick = () => getModalInstance(getElement('tmsPreviewModal')).hide(); }
+                getElement('tmsPreviewPublishBtn').onclick = tmsDoPublish;
 
         /* --- Leaderboard Mgt --- */
         async function loadLeaderboardManagementData() { const uArr = Object.values(fullUserDataCache); let h=''; uArr.forEach(u=>{ h+=`<tr data-uid="${u.uid}"><td>${u.displayName||u.email}</td><td><input type="number" class="form-control form-control-sm r-inp" value="${u.leaderboardRank||''}"></td><td><input type="number" class="form-control form-control-sm e-inp" value="${u.leaderboardDisplayEarnings||''}"></td></tr>`; }); getElement('leaderboardMgtTableBody').innerHTML=h; }
@@ -1638,7 +2285,7 @@
                             const uD = (await get(uRef)).val(); 
                             await update(uRef, {bonusCash: (uD.bonusCash||0)+rAmt, balance: (uD.balance||0)+rAmt}); 
                         } 
-                        await update(ref(db, `pendingReferrals/${id}`), {status:'completed', bonusAmount:rAmt, creditedAt:serverTimestamp(), adminUid: currentUser.uid}); 
+                        await update(ref(db, `pendingReferrals/${id}`), {status:'completed', bonusAmount:rAmt, creditedAt:serverTimestamp(), adminUid: currentAdminUser.uid});
                         await push(ref(db, `users/${uid}/notifications`), {
                             title: 'Referral Approved!',
                             message: `Your referral for ${btn.dataset.remail} was approved! You earned ₹${rAmt}.`,
@@ -1657,7 +2304,7 @@
                         const prSnap = await get(ref(db, `pendingReferrals/${id}`));
                         if (prSnap.exists() && prSnap.val().status === 'pending') {
                             const uid = btn.dataset.uid;
-                            await update(ref(db, `pendingReferrals/${id}`), {status:'rejected', rejectionReason: reason, rejectedAt:serverTimestamp(), adminUid: currentUser.uid});
+                            await update(ref(db, `pendingReferrals/${id}`), {status:'rejected', rejectionReason: reason, rejectedAt:serverTimestamp(), adminUid: currentAdminUser.uid});
                             await push(ref(db, `users/${uid}/notifications`), {
                                 title: 'Referral Rejected',
                                 message: `Your referral for ${btn.dataset.remail} was rejected. Reason: ${reason}.`,
