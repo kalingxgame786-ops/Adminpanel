@@ -328,6 +328,232 @@
         #tournament-management-section .note-box { display: flex; gap: 10px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 12px; border-radius: 8px; margin-top: 16px; font-size: 0.8rem; color: var(--mr-text-main); line-height: 1.5; }
         #tournament-management-section .mr-select { background: #0f131a; border: 1px solid rgba(255,255,255,0.1); color: var(--mr-text-main); border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; outline: none; width: 100%; }
         #tournament-management-section .mr-select:focus { border-color: var(--mr-purple); }
+
+        /* --- Clash Squad Result Scoped Styles --- */
+        #tournament-management-section .cs-settings-card {
+            background: rgba(22, 27, 40, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--mr-br-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            align-items: end;
+        }
+        @media (max-width: 768px) {
+            #tournament-management-section .cs-settings-card {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+        #tournament-management-section .cs-setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        #tournament-management-section .select-wrapper-with-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #0f131a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #tournament-management-section .select-icon {
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--warning-color);
+        }
+        #tournament-management-section .select-icon i {
+            font-size: 1rem;
+        }
+        #tournament-management-section .mr-select-with-icon {
+            background: transparent;
+            border: none;
+            color: var(--mr-text-main);
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        #tournament-management-section .mr-select-with-icon option {
+            background: #141b2d;
+            color: var(--mr-text-main);
+        }
+        
+        #tournament-management-section .cs-info-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+        }
+        #tournament-management-section .cs-info-box i {
+            font-size: 1.15rem;
+            color: #60a5fa;
+            flex-shrink: 0;
+        }
+
+        #tournament-management-section .cs-table-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 16px;
+            letter-spacing: 0.05em;
+        }
+
+        #tournament-management-section .cs-status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        #tournament-management-section .cs-share-input {
+            width: 100px;
+            background: #0f131a;
+            border: 1px solid var(--mr-card-border);
+            color: var(--mr-text-main);
+            padding: 6px 10px;
+            border-radius: 6px;
+            outline: none;
+            transition: var(--mr-tx);
+            text-align: center;
+        }
+        #tournament-management-section .cs-share-input:focus {
+            border-color: var(--mr-purple);
+        }
+
+        #tournament-management-section .cs-summary-cards {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        #tournament-management-section .cs-summary-card {
+            flex: 1;
+            min-width: 220px;
+            background: rgba(22, 27, 40, 0.5);
+            border: 1px solid var(--mr-card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        #tournament-management-section .cs-summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.02) 0%, transparent 80%);
+            pointer-events: none;
+        }
+        #tournament-management-section .cs-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        #tournament-management-section .cs-card-info {
+            display: flex;
+            flex-direction: column;
+        }
+        #tournament-management-section .cs-card-label {
+            font-size: 0.75rem;
+            color: var(--mr-text-muted);
+            font-weight: 500;
+        }
+        #tournament-management-section .cs-card-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--mr-text-main);
+            margin-top: 2px;
+        }
+
+        #tournament-management-section .cs-card-members {
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        #tournament-management-section .cs-card-members .cs-card-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        #tournament-management-section .cs-card-prize {
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        #tournament-management-section .cs-card-prize .cs-card-icon {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        #tournament-management-section .cs-card-share {
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+        #tournament-management-section .cs-card-share .cs-card-icon {
+            background: rgba(124, 58, 237, 0.1);
+            color: #8b5cf6;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        #tournament-management-section .cs-sidebar-info-box {
+            display: flex;
+            gap: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            line-height: 1.4;
+        }
+        #tournament-management-section .cs-sidebar-info-box i {
+            font-size: 1rem;
+            color: #60a5fa;
+            flex-shrink: 0;
+        }
+
+        #tournament-management-section .tab-btn.active {
+            background: var(--mr-card-bg);
+            color: var(--mr-text-main);
+            border-top: 2px solid #8b5cf6 !important;
+            border-bottom: none !important;
+            box-shadow: 0 -4px 10px rgba(139, 92, 246, 0.15);
+        }
+        #tournament-management-section .cs-table-fade-in {
+            animation: csTableFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes csTableFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         /* End Match Result CSS */
     </style>
 </head>
@@ -625,7 +851,7 @@
                     <div class="left-panel">
 
                         <!-- Distribution Settings -->
-                        <div class="mr-glass">
+                        <div class="mr-glass tms-br-content">
                             <h2 class="mr-section-title"><i class="bi bi-gear-fill"></i> DISTRIBUTION SETTINGS</h2>
 
                             <div class="settings-grid">
@@ -688,7 +914,7 @@
                                 <button class="tab-btn">CLASH SQUAD RESULT</button>
                             </div>
 
-                            <div class="mr-glass table-card">
+                            <div class="mr-glass table-card tms-br-content">
                                 <div class="table-controls">
                                     <div class="mr-search-box">
                                         <input type="text" placeholder="Search by IGN / UID" id="mrSearch">
@@ -719,21 +945,117 @@
                                     <span id="mrTableFoot">Showing 0 players</span>
                                 </div>
                             </div>
+
+                            <!-- Clash Squad Result layout -->
+                            <div class="tms-cs-content" style="display: none;">
+                                <!-- Winner Settings Card -->
+                                <div class="cs-settings-card">
+                                    <div class="cs-setting-item">
+                                        <label class="input-label">Winner Team</label>
+                                        <div class="select-wrapper-with-icon">
+                                            <div class="select-icon" id="csWinnerTeamIcon">
+                                                <i class="bi bi-shield-fill text-warning"></i>
+                                            </div>
+                                            <select id="csWinnerTeam" class="mr-select-with-icon">
+                                                <option value="">Select Team</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cs-setting-item">
+                                        <label class="input-label">Winner Prize (₹)</label>
+                                        <div class="input-wrapper" style="margin-bottom:0;">
+                                            <span class="currency">₹</span>
+                                            <input type="number" id="csWinnerPrize" placeholder="0.00" step="0.01">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cs-setting-item d-flex flex-column align-items-md-end justify-content-center">
+                                        <label class="input-label mb-2">Split Equally Among Members</label>
+                                        <label class="toggle-switch">
+                                            <span class="toggle-label" id="csSplitLabel">ON</span>
+                                            <input type="checkbox" checked id="csSplitEqually">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Information Card -->
+                                <div class="cs-info-box">
+                                    <i class="bi bi-info-circle"></i>
+                                    <span>The winner prize will be distributed equally among all members of the selected winning team.</span>
+                                </div>
+                                
+                                <!-- Winning Team Members Table -->
+                                <h3 class="cs-table-title">WINNING TEAM MEMBERS</h3>
+                                <div class="mr-glass table-card" style="border-top-left-radius: var(--mr-br-lg); border-top-right-radius: var(--mr-br-lg); padding:0; margin-bottom:24px;">
+                                    <div class="mr-table-wrap">
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Player Avatar</th>
+                                                    <th>Player Name</th>
+                                                    <th>Game UID</th>
+                                                    <th>Share (₹)</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="csPlayerTable">
+                                                <tr><td colspan="6" class="text-gray" style="text-align:center; padding:30px;">Select a match to load winning team members</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Summary Cards -->
+                                <div class="cs-summary-cards mt-4">
+                                    <div class="cs-summary-card cs-card-members">
+                                        <div class="cs-card-icon"><i class="bi bi-people-fill"></i></div>
+                                        <div class="cs-card-info">
+                                            <span class="cs-card-label">Total Members</span>
+                                            <span class="cs-card-value" id="csTotalMembers">0</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cs-summary-card cs-card-prize">
+                                        <div class="cs-card-icon"><i class="bi bi-currency-rupee"></i></div>
+                                        <div class="cs-card-info">
+                                            <span class="cs-card-label">Total Prize</span>
+                                            <span class="cs-card-value" id="csTotalPrize">₹ 0.00</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cs-summary-card cs-card-share">
+                                        <div class="cs-card-icon"><i class="bi bi-trophy-fill"></i></div>
+                                        <div class="cs-card-info">
+                                            <span class="cs-card-label">Each Member Share</span>
+                                            <span class="cs-card-value" id="csEachMemberShare">₹ 0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Bottom Action Buttons -->
                         <div class="action-buttons">
                             <button class="mr-btn btn-dark" id="mrResetBtn"><i class="bi bi-arrow-repeat"></i> Reset Result</button>
-                            <button class="mr-btn btn-purple" id="mrPreviewBtn"><i class="bi bi-eye-fill"></i>
+                            <button class="mr-btn btn-purple tms-br-content" id="mrPreviewBtn"><i class="bi bi-eye-fill"></i>
                                 <div class="btn-text">
                                     <strong>Preview Distribution</strong>
                                     <span>Check how prizes will be distributed</span>
                                 </div>
                             </button>
-                            <button class="mr-btn btn-green" id="mrPublishBtn"><i class="bi bi-send-fill"></i>
+                            <button class="mr-btn btn-green tms-br-content" id="mrPublishBtn"><i class="bi bi-send-fill"></i>
                                 <div class="btn-text">
                                     <strong>Publish Result</strong>
                                     <span>Distribute prizes to players wallet</span>
+                                </div>
+                            </button>
+                            <button class="mr-btn btn-green tms-cs-content" id="csPublishBtn" style="display:none;"><i class="bi bi-send-fill"></i>
+                                <div class="btn-text">
+                                    <strong>Publish Result</strong>
+                                    <span>Distribute CS winner prize</span>
                                 </div>
                             </button>
                         </div>
@@ -744,7 +1066,7 @@
                     <div class="right-panel">
 
                         <!-- Revenue Summary -->
-                        <div class="mr-glass">
+                        <div class="mr-glass tms-br-content">
                             <h2 class="mr-section-title"><i class="bi bi-graph-up-arrow text-blue"></i> REVENUE SUMMARY</h2>
                             <ul class="summary-list">
                                 <li>
@@ -775,8 +1097,36 @@
                             </div>
                         </div>
 
+                        <!-- Clash Squad Revenue Summary -->
+                        <div class="mr-glass tms-cs-content" style="display: none;">
+                            <h2 class="mr-section-title"><i class="bi bi-graph-up-arrow text-blue"></i> REVENUE SUMMARY</h2>
+                            <ul class="summary-list">
+                                <li>
+                                    <span class="label">Total Collection <small id="csCollNote"></small></span>
+                                    <span class="value" id="csSumCollection">₹ 0.00</span>
+                                </li>
+                                <li>
+                                    <span class="label">Winner Prize Distribution</span>
+                                    <span class="value text-purple" id="csSumWinnerDist">₹ 0.00</span>
+                                </li>
+                                <li>
+                                    <span class="label">Total Distributed</span>
+                                    <span class="value text-blue" id="csSumDistributed">₹ 0.00</span>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <span class="label">Remaining Budget</span>
+                                    <span class="value text-warning" id="csSumRemaining">₹ 0.00</span>
+                                </li>
+                                <li class="profit-row">
+                                    <span class="label"><i class="bi bi-arrow-up-right-circle text-green"></i> Your Profit (Earning)</span>
+                                    <span class="value text-green fw-bold fs-large" id="csSumProfit">₹ 0.00</span>
+                                </li>
+                            </ul>
+                        </div>
+
                         <!-- Distribution Quick Info -->
-                        <div class="mr-glass mt-20">
+                        <div class="mr-glass mt-20 tms-br-content">
                             <h2 class="mr-section-title"><i class="bi bi-pie-chart-fill text-purple"></i> DISTRIBUTION QUICK INFO</h2>
                             <ul class="summary-list">
                                 <li>
@@ -803,6 +1153,37 @@
                             <div class="note-box">
                                 <i class="bi bi-info-circle-fill text-blue"></i>
                                 <span><strong>Note:</strong> If Placement Prize is OFF, its pool will be added to your profit.</span>
+                            </div>
+                        </div>
+
+                        <!-- Clash Squad Match Quick Info -->
+                        <div class="mr-glass mt-20 tms-cs-content" style="display: none;">
+                            <h2 class="mr-section-title"><i class="bi bi-controller text-purple"></i> MATCH QUICK INFO</h2>
+                            <ul class="summary-list">
+                                <li>
+                                    <span class="label">Game Mode</span>
+                                    <span class="value" id="csInfoGameMode">Clash Squad</span>
+                                </li>
+                                <li>
+                                    <span class="label">Total Players</span>
+                                    <span class="value" id="csInfoTotalPlayers">0 / 0</span>
+                                </li>
+                                <li>
+                                    <span class="label">Winning Team</span>
+                                    <span class="value" id="csInfoWinningTeam">-</span>
+                                </li>
+                                <li>
+                                    <span class="label">Winner Prize</span>
+                                    <span class="value" id="csInfoWinnerPrize">₹ 0.00</span>
+                                </li>
+                                <li>
+                                    <span class="label">Each Member Share</span>
+                                    <span class="value" id="csInfoMemberShare">₹ 0.00</span>
+                                </li>
+                            </ul>
+                            <div class="cs-sidebar-info-box mt-3">
+                                <i class="bi bi-info-circle"></i>
+                                <span>Note: Only the winning team receives the prize. Other teams receive ₹0.</span>
                             </div>
                         </div>
 
@@ -2065,13 +2446,233 @@
                 });
 
                 // Tab Switching Logic (BATTLE ROYALE / CLASH SQUAD) — visual only per result.html.
-                document.querySelectorAll('#tournament-management-section .tab-btn').forEach(btn => {
+                document.querySelectorAll('#tournament-management-section .tab-btn').forEach((btn, idx) => {
                     btn.addEventListener('click', () => {
                         const active = document.querySelector('#tournament-management-section .tab-btn.active');
                         if (active) active.classList.remove('active');
                         btn.classList.add('active');
+
+                        const brContent = document.querySelectorAll('#tournament-management-section .tms-br-content');
+                        const csContent = document.querySelectorAll('#tournament-management-section .tms-cs-content');
+                        if (idx === 0) {
+                            brContent.forEach(el => el.style.display = '');
+                            csContent.forEach(el => el.style.display = 'none');
+                        } else {
+                            brContent.forEach(el => el.style.display = 'none');
+                            csContent.forEach(el => el.style.display = '');
+                        }
                     });
                 });
+
+                window.csLastRenderKey = null;
+
+                function calculateClashSquadPrizes() {
+                    if (!tmsCurrentTournament) return;
+
+                    const winnerTeamNum = getElement('csWinnerTeam').value;
+                    const winnerPrize = parseFloat(getElement('csWinnerPrize').value) || 0;
+                    const splitEqually = getElement('csSplitEqually').checked;
+
+                    // Update Split Equally toggle label text
+                    const splitLabel = getElement('csSplitLabel');
+                    if (splitLabel) {
+                        splitLabel.textContent = splitEqually ? 'ON' : 'OFF';
+                        splitLabel.className = splitEqually ? 'toggle-label text-green' : 'toggle-label text-secondary';
+                    }
+
+                    // 1. Group registered players by team from slots
+                    const teams = {};
+                    if (tmsCurrentTournament.registeredPlayers) {
+                        Object.entries(tmsCurrentTournament.registeredPlayers).forEach(([uid, reg]) => {
+                            if (reg.teamDetails && reg.teamDetails.length > 0) {
+                                reg.teamDetails.forEach(member => {
+                                    const slotKey = member.slotKey || '';
+                                    const teamNum = slotKey.split('_')[0];
+                                    if (teamNum) {
+                                        if (!teams[teamNum]) teams[teamNum] = [];
+                                        teams[teamNum].push({ uid, name: member.gameName, gameUid: member.gameUid, slotKey });
+                                    }
+                                });
+                            } else if (reg.slots && reg.slots.length > 0) {
+                                reg.slots.forEach(slotKey => {
+                                    const teamNum = slotKey.split('_')[0];
+                                    if (teamNum) {
+                                        if (!teams[teamNum]) teams[teamNum] = [];
+                                        teams[teamNum].push({ uid, name: reg.gameName || reg.displayName || uid, gameUid: reg.gameUid || '', slotKey });
+                                    }
+                                });
+                            } else if (reg.slotKey) {
+                                const teamNum = reg.slotKey.split('_')[0];
+                                if (teamNum) {
+                                    if (!teams[teamNum]) teams[teamNum] = [];
+                                    teams[teamNum].push({ uid, name: reg.gameName || reg.displayName || uid, gameUid: reg.gameUid || '', slotKey: reg.slotKey });
+                                }
+                            }
+                        });
+                    }
+
+                    // 2. Populate Winner Team dropdown
+                    const select = getElement('csWinnerTeam');
+                    const sortedTeamNums = Object.keys(teams).sort((a,b) => parseInt(a) - parseInt(b));
+                    
+                    let optHtml = '<option value="">Select Team</option>';
+                    sortedTeamNums.forEach(teamNum => {
+                        const count = teams[teamNum].length;
+                        optHtml += `<option value="${teamNum}">Team ${teamNum} • ${count} Members</option>`;
+                    });
+                    
+                    // Only update dropdown innerHTML if options changed to avoid losing selected value
+                    const selectSignature = sortedTeamNums.map(n => `${n}:${teams[n].length}`).join(',');
+                    if (select.dataset.signature !== selectSignature) {
+                        select.dataset.signature = selectSignature;
+                        const previousValue = select.value;
+                        select.innerHTML = optHtml;
+                        if (previousValue && teams[previousValue]) {
+                            select.value = previousValue;
+                        }
+                    }
+
+                    // 3. Auto-select first available team if none is selected
+                    if (!select.value && sortedTeamNums.length > 0) {
+                        select.value = sortedTeamNums[0];
+                    }
+
+                    const activeWinnerTeam = select.value;
+                    const members = teams[activeWinnerTeam] || [];
+                    const tb = getElement('csPlayerTable');
+                    const locked = !!tmsCurrentTournament.winningsCredited;
+
+                    // Display warning alert banner if already published
+                    if (locked) {
+                        showStatus(getElement('tmsStatus'), 'Already Published — winnings distributed to player wallets.', 'warning', 0);
+                    } else {
+                        const tmsStat = getElement('tmsStatus');
+                        if (tmsStat && tmsStat.innerHTML.includes('Already Published')) {
+                            tmsStat.innerHTML = '';
+                        }
+                    }
+
+                    // Render table members
+                    if (!activeWinnerTeam) {
+                        tb.innerHTML = `<tr><td colspan="6" class="text-gray" style="text-align:center; padding:30px;">Select a winning team to load members</td></tr>`;
+                    } else if (members.length === 0) {
+                        tb.innerHTML = `<tr><td colspan="6" class="text-gray" style="text-align:center; padding:30px;">No players found.</td></tr>`;
+                    } else {
+                        const renderKey = `${activeWinnerTeam}_${members.length}_${splitEqually}_${winnerPrize}`;
+                        const equalShare = members.length > 0 ? (winnerPrize / members.length) : 0;
+
+                        if (window.csLastRenderKey !== renderKey) {
+                            window.csLastRenderKey = renderKey;
+                            
+                            // Trigger table fade-in animation
+                            tb.classList.remove('cs-table-fade-in');
+                            void tb.offsetWidth; // trigger reflow
+                            tb.classList.add('cs-table-fade-in');
+
+                            let h = '';
+                            members.forEach((m, idx) => {
+                                let playerPrize = equalShare;
+                                // If winnings already credited, show the recorded prize
+                                if (locked && tmsCurrentTournament.registeredPlayers && tmsCurrentTournament.registeredPlayers[m.uid]) {
+                                    playerPrize = Number(tmsCurrentTournament.registeredPlayers[m.uid].prize) || 0;
+                                }
+
+                                const u = fullUserDataCache[m.uid] || {};
+                                const avatarSrc = u.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=141b2d&color=8b5cf6&bold=true`;
+
+                                h += `<tr data-uid="${m.uid}" data-slotkey="${m.slotKey}">
+                                    <td>${idx + 1}</td>
+                                    <td><img src="${avatarSrc}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=141b2d&color=8b5cf6&bold=true'" class="player-avatar" style="width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,0.1);"></td>
+                                    <td><strong>${m.name}</strong></td>
+                                    <td>
+                                        <div>${m.gameUid}</div>
+                                        <div style="font-size:0.75rem; color:var(--mr-text-muted); font-family:monospace;">${m.uid}</div>
+                                    </td>
+                                    <td><input type="number" class="cs-share-input" value="${playerPrize.toFixed(2)}" ${locked || splitEqually ? 'readonly' : ''}></td>
+                                    <td><span class="cs-status-badge">Winner</span></td>
+                                </tr>`;
+                            });
+                            tb.innerHTML = h;
+                        } else {
+                            // Update input values inline if split equally is on
+                            if (splitEqually) {
+                                document.querySelectorAll('#csPlayerTable .cs-share-input').forEach(inp => {
+                                    inp.value = equalShare.toFixed(2);
+                                    inp.readOnly = true;
+                                });
+                            } else {
+                                document.querySelectorAll('#csPlayerTable .cs-share-input').forEach(inp => {
+                                    if (!locked) inp.readOnly = false;
+                                });
+                            }
+                        }
+                    }
+
+                    // 4. Calculate live metrics
+                    let totalWinnerShares = 0;
+                    document.querySelectorAll('#csPlayerTable tr').forEach(row => {
+                        const inp = row.querySelector('.cs-share-input');
+                        if (inp) {
+                            totalWinnerShares += parseFloat(inp.value) || 0;
+                        }
+                    });
+
+                    // 5. Collection = EntryFee * JoinedPlayers
+                    const playerCount = tmsCurrentTournament.registeredPlayers ? Object.keys(tmsCurrentTournament.registeredPlayers).length : 0;
+                    const collection = (Number(tmsCurrentTournament.entryFee) || 0) * playerCount;
+
+                    // Remaining Budget = PrizePool - Distributed
+                    const remainingBudget = winnerPrize - totalWinnerShares;
+                    // Profit = Collection - Distributed
+                    const profit = collection - totalWinnerShares;
+
+                    // 6. Update Revenue Summary UI
+                    getElement('csSumCollection').textContent = `₹ ${collection.toFixed(2)}`;
+                    getElement('csCollNote').textContent = playerCount ? `( ${playerCount} × ₹ ${Number(tmsCurrentTournament.entryFee || 0)} )` : '';
+                    getElement('csSumWinnerDist').textContent = `₹ ${totalWinnerShares.toFixed(2)}`;
+                    getElement('csSumDistributed').textContent = `₹ ${totalWinnerShares.toFixed(2)}`;
+                    getElement('csSumRemaining').textContent = `₹ ${remainingBudget.toFixed(2)}`;
+                    getElement('csSumProfit').textContent = `₹ ${profit.toFixed(2)}`;
+
+                    // 7. Update Summary Cards UI
+                    getElement('csTotalMembers').textContent = members.length;
+                    getElement('csTotalPrize').textContent = `₹ ${winnerPrize.toFixed(2)}`;
+                    
+                    const averageShare = members.length > 0 ? (totalWinnerShares / members.length) : 0;
+                    getElement('csEachMemberShare').textContent = `₹ ${averageShare.toFixed(2)}`;
+
+                    // 8. Update Match Quick Info UI
+                    getElement('csInfoGameMode').textContent = tmsCurrentTournament.category || 'Clash Squad';
+                    getElement('csInfoTotalPlayers').textContent = `${playerCount} / ${tmsCurrentTournament.maxPlayers || playerCount}`;
+                    getElement('csInfoWinningTeam').textContent = activeWinnerTeam ? `TEAM ${activeWinnerTeam}` : '-';
+                    getElement('csInfoWinnerPrize').textContent = `₹ ${winnerPrize.toFixed(2)}`;
+                    getElement('csInfoMemberShare').textContent = `₹ ${averageShare.toFixed(2)}`;
+                }
+
+                // Add event listeners for Clash Squad settings
+                setTimeout(() => {
+                    const cswt = getElement('csWinnerTeam');
+                    if (cswt) {
+                        cswt.addEventListener('change', () => {
+                            window.csLastRenderKey = null; // force re-render
+                            calculateClashSquadPrizes();
+                        });
+                    }
+                    const cswp = getElement('csWinnerPrize');
+                    if (cswp) cswp.addEventListener('input', calculateClashSquadPrizes);
+                    
+                    const csws = getElement('csSplitEqually');
+                    if (csws) csws.addEventListener('change', calculateClashSquadPrizes);
+                    
+                    const cspt = getElement('csPlayerTable');
+                    if (cspt) {
+                        cspt.addEventListener('input', (e) => {
+                            if (e.target.classList.contains('cs-share-input')) {
+                                calculateClashSquadPrizes();
+                            }
+                        });
+                    }
+                }, 500);
 
                 // Render the tournament info card from the live Firebase snapshot.
                 function tmsRenderInfoCard(t, tid) {
@@ -2091,6 +2692,22 @@
                     getElement('mrMap').textContent = t.map || '-';
                 }
 
+                // Helper to switch to a tab by index (0=BR, 1=CS)
+                function tmsSwitchTab(idx) {
+                    const tabBtns = document.querySelectorAll('#tournament-management-section .tab-btn');
+                    const brContent = document.querySelectorAll('#tournament-management-section .tms-br-content');
+                    const csContent = document.querySelectorAll('#tournament-management-section .tms-cs-content');
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    if (tabBtns[idx]) tabBtns[idx].classList.add('active');
+                    if (idx === 0) {
+                        brContent.forEach(el => el.style.display = '');
+                        csContent.forEach(el => el.style.display = 'none');
+                    } else {
+                        brContent.forEach(el => el.style.display = 'none');
+                        csContent.forEach(el => el.style.display = '');
+                    }
+                }
+
                 // Match select handler — loads the tournament, renders info card + player table, locks if published.
                 getElement('tmsTournamentSelect').onchange = async (e) => {
                     const tid = e.target.value;
@@ -2098,59 +2715,131 @@
                     const t = (await get(ref(db, `tournaments/${tid}`))).val();
                     if (!t) { showStatus(getElement('tmsStatus'), 'Tournament not found.', 'danger'); return; }
                     tmsCurrentTournament = t;
+                    tmsCurrentTournamentId = tid;
                     const locked = !!t.winningsCredited;
 
                     // Info card
                     tmsRenderInfoCard(t, tid);
 
-                    // Defaults into distribution settings
-                    getElement('placementPool').value = Number(t.prizePool) || 0;
-                    getElement('perKillAmount').value = Number(t.perKillPrize) || 0;
-                    getElement('togglePlacement').checked = true;
-                    getElement('toggleKill').checked = true;
-                    getElement('toggleAuto').checked = true;
+                    // Detect Clash Squad vs Battle Royale by category
+                    const isCS = (t.category || '').toLowerCase().includes('clash');
 
-                    // Player table
-                    let h = '';
-                    tmsLastRendered = [];
-                    if (t.registeredPlayers) {
-                        let idx = 0;
-                        for (const uid of Object.keys(t.registeredPlayers)) {
-                            const u = fullUserDataCache[uid];
-                            if (u) {
-                                idx++;
-                                const name = u.displayName || u.email || uid;
-                                const uidShort = String(u.gameUid || uid).slice(0, 14);
-                                const exRank = t.registeredPlayers[uid].rank;
-                                const exKills = t.registeredPlayers[uid].kills;
-                                const highlight = idx === 1 ? ' class="highlight-row"' : '';
-                                tmsLastRendered.push({ uid, name });
-                                h += `<tr data-uid="${uid}"${highlight}>
-                                    <td>${idx}</td>
-                                    <td><div class="ign-cell"><strong>${name}</strong></div></td>
-                                    <td class="text-gray">${uidShort}</td>
-                                    <td><input type="number" class="table-input place-input" value="${exRank || ''}" ${locked ? 'disabled' : ''}></td>
-                                    <td><input type="number" class="table-input kill-input" value="${exKills || 0}" ${locked ? 'disabled' : ''}></td>
-                                    <td class="placement-prize text-gray">₹ 0.00</td>
-                                    <td class="kill-prize text-gray">₹ 0.00</td>
-                                    <td class="total-prize fw-bold text-gray">₹ 0.00</td>
-                                </tr>`;
+                    if (isCS) {
+                        // Switch to Clash Squad tab
+                        tmsSwitchTab(1);
+
+                        // Default CS prize to tournament prizePool
+                        const csPrizeEl = getElement('csWinnerPrize');
+                        if (csPrizeEl) csPrizeEl.value = Number(t.prizePool) || 0;
+
+                        // Reset split toggle to ON
+                        const csSplitEl = getElement('csSplitEqually');
+                        if (csSplitEl) csSplitEl.checked = true;
+
+                        // Lock CS controls if already published
+                        const csControls = ['csWinnerTeam', 'csWinnerPrize', 'csSplitEqually'];
+                        csControls.forEach(id => { const el = getElement(id); if (el) el.disabled = locked; });
+                        document.querySelectorAll('.cs-share-input').forEach(inp => inp.readOnly = locked);
+                        const csPubBtn = getElement('csPublishBtn');
+                        if (csPubBtn) {
+                            csPubBtn.disabled = locked;
+                            csPubBtn.textContent = locked ? 'Already Published' : 'Publish Result';
+                        }
+
+                        // Reset render key so table re-renders fresh
+                        window.csLastRenderKey = null;
+
+                        // Run initial CS calculation (auto-selects first team)
+                        calculateClashSquadPrizes();
+                    } else {
+                        // Switch to Battle Royale tab
+                        tmsSwitchTab(0);
+
+                        // Defaults into distribution settings
+                        getElement('placementPool').value = Number(t.prizePool) || 0;
+                        getElement('perKillAmount').value = Number(t.perKillPrize) || 0;
+                        getElement('togglePlacement').checked = true;
+                        getElement('toggleKill').checked = true;
+                        getElement('toggleAuto').checked = true;
+
+                        // Player table
+                        let h = '';
+                        tmsLastRendered = [];
+                        if (t.registeredPlayers) {
+                            let idx = 0;
+                            for (const uid of Object.keys(t.registeredPlayers)) {
+                                const u = fullUserDataCache[uid];
+                                if (u) {
+                                    idx++;
+                                    const name = u.displayName || u.email || uid;
+                                    const uidShort = String(u.gameUid || uid).slice(0, 14);
+                                    const exRank = t.registeredPlayers[uid].rank;
+                                    const exKills = t.registeredPlayers[uid].kills;
+                                    const highlight = idx === 1 ? ' class="highlight-row"' : '';
+                                    tmsLastRendered.push({ uid, name });
+                                    h += `<tr data-uid="${uid}"${highlight}>
+                                        <td>${idx}</td>
+                                        <td><div class="ign-cell"><strong>${name}</strong></div></td>
+                                        <td class="text-gray">${uidShort}</td>
+                                        <td><input type="number" class="table-input place-input" value="${exRank || ''}" ${locked ? 'disabled' : ''}></td>
+                                        <td><input type="number" class="table-input kill-input" value="${exKills || 0}" ${locked ? 'disabled' : ''}></td>
+                                        <td class="placement-prize text-gray">₹ 0.00</td>
+                                        <td class="kill-prize text-gray">₹ 0.00</td>
+                                        <td class="total-prize fw-bold text-gray">₹ 0.00</td>
+                                    </tr>`;
+                                }
                             }
                         }
-                    }
-                    getElement('playerTable').innerHTML = h || `<tr><td colspan="8" class="text-gray" style="text-align:center;">No players registered</td></tr>`;
-                    getElement('mrTableFoot').textContent = `Showing ${tmsLastRendered.length} players`;
+                        getElement('playerTable').innerHTML = h || `<tr><td colspan="8" class="text-gray" style="text-align:center;">No players registered</td></tr>`;
+                        getElement('mrTableFoot').textContent = `Showing ${tmsLastRendered.length} players`;
 
-                    // Lock handling
-                    ['togglePlacement', 'toggleKill', 'toggleAuto', 'placementPool', 'perKillAmount'].forEach(id => getElement(id).disabled = locked);
-                    if (locked) {
-                        showStatus(getElement('tmsStatus'), 'This match result is already published.', 'warning');
+                        // Lock handling
+                        ['togglePlacement', 'toggleKill', 'toggleAuto', 'placementPool', 'perKillAmount'].forEach(id => getElement(id).disabled = locked);
+                        if (locked) {
+                            showStatus(getElement('tmsStatus'), 'This match result is already published.', 'warning');
+                        }
+                        calculatePrizes(); // initial BR calculation on load
                     }
-                    calculatePrizes(); // initial calculation on load
                 };
+
+                // Store current tournament ID for use in publish
+                let tmsCurrentTournamentId = null;
 
                 // Collect final payouts from the current table state.
                 function tmsCollectPayouts() {
+                    const t = tmsCurrentTournament;
+                    const isCS = t && (t.category || '').toLowerCase().includes('clash');
+
+                    if (isCS) {
+                        // Clash Squad: winner team members get prize; all other registered players get 0.
+                        const out = [];
+                        const winnerTeam = (getElement('csWinnerTeam') || {}).value || '';
+                        const winnerPrize = parseFloat((getElement('csWinnerPrize') || {}).value) || 0;
+
+                        // Build a map of winnerTeam uid -> share from table
+                        const winnerShares = {};
+                        document.querySelectorAll('#csPlayerTable tr[data-uid]').forEach(row => {
+                            const uid = row.dataset.uid;
+                            const share = parseFloat(row.querySelector('.cs-share-input')?.value) || 0;
+                            winnerShares[uid] = share;
+                        });
+
+                        // All registered players
+                        if (t.registeredPlayers) {
+                            Object.keys(t.registeredPlayers).forEach(uid => {
+                                if (winnerShares[uid] !== undefined) {
+                                    // Winner team member
+                                    out.push({ uid, kills: 0, rank: 1, prize: winnerShares[uid] });
+                                } else {
+                                    // Loser
+                                    out.push({ uid, kills: 0, rank: 0, prize: 0 });
+                                }
+                            });
+                        }
+                        return out;
+                    }
+
+                    // Battle Royale (original logic)
                     const out = [];
                     document.querySelectorAll('#playerTable tr[data-uid]').forEach(row => {
                         const uid = row.dataset.uid;
@@ -2206,9 +2895,68 @@
                     getElement('tmsTournamentSelect').dispatchEvent(new Event('change')); // re-lock UI
                 }
 
+                // Clash Squad dedicated publish handler with validation.
+                async function csDoPublish() {
+                    const tid = getElement('tmsTournamentSelect').value;
+                    if (!tid) { showStatus(getElement('tmsStatus'), 'Please select a match first.', 'danger'); return; }
+                    if (tmsCurrentTournament && tmsCurrentTournament.winningsCredited) {
+                        showStatus(getElement('tmsStatus'), 'Already Published.', 'warning'); return;
+                    }
+
+                    // Validation 1: winning team must have members
+                    const memberRows = document.querySelectorAll('#csPlayerTable tr[data-uid]');
+                    if (memberRows.length === 0) {
+                        showStatus(getElement('tmsStatus'), 'Cannot publish: the selected winning team has no members.', 'danger'); return;
+                    }
+
+                    // Validation 2: shares must sum to winner prize
+                    const winnerPrize = parseFloat((getElement('csWinnerPrize') || {}).value) || 0;
+                    let totalShares = 0;
+                    memberRows.forEach(row => {
+                        totalShares += parseFloat(row.querySelector('.cs-share-input')?.value) || 0;
+                    });
+                    if (Math.abs(totalShares - winnerPrize) > 0.01) {
+                        showStatus(getElement('tmsStatus'), `Cannot publish: shares total (₹${totalShares.toFixed(2)}) must equal the Winner Prize (₹${winnerPrize.toFixed(2)}).`, 'danger'); return;
+                    }
+
+                    // Confirmation dialog
+                    const winnerTeamNum = (getElement('csWinnerTeam') || {}).value || '?';
+                    const confirmed = confirm(`Publish Clash Squad result?\n\nWinning Team: TEAM ${winnerTeamNum}\nTotal Prize: ₹${winnerPrize.toFixed(2)}\nMembers: ${memberRows.length}\n\nThis action cannot be undone.`);
+                    if (!confirmed) return;
+
+                    const payouts = tmsCollectPayouts();
+                    const updates = {};
+                    payouts.forEach(p => {
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/kills`] = p.kills;
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/rank`] = p.rank;
+                        updates[`tournaments/${tid}/registeredPlayers/${p.uid}/prize`] = p.prize;
+                        if (p.prize > 0 && fullUserDataCache[p.uid]) {
+                            const currWin = fullUserDataCache[p.uid].winningCash || 0;
+                            updates[`users/${p.uid}/winningCash`] = currWin + p.prize;
+                        }
+                    });
+                    updates[`tournaments/${tid}/winningsCredited`] = true;
+                    updates[`tournaments/${tid}/status`] = 'result';
+                    showLoader(true);
+                    await update(ref(db), updates);
+                    showLoader(false);
+                    showStatus(getElement('tmsStatus'), 'Already Published — winnings distributed to player wallets.', 'warning', 0);
+                    // Lock CS UI
+                    ['csWinnerTeam', 'csWinnerPrize', 'csSplitEqually'].forEach(id => { const el = getElement(id); if (el) el.disabled = true; });
+                    document.querySelectorAll('.cs-share-input').forEach(inp => inp.readOnly = true);
+                    const csPubBtn = getElement('csPublishBtn');
+                    if (csPubBtn) { csPubBtn.disabled = true; csPubBtn.textContent = 'Already Published'; }
+                    // Update local snapshot so subsequent calls detect locked state
+                    if (tmsCurrentTournament) tmsCurrentTournament.winningsCredited = true;
+                }
+
                 getElement('mrPublishBtn').onclick = () => getElement('mrPreviewBtn').click();
                 if (getElement('tmsPreviewEditBtn')) { getElement('tmsPreviewEditBtn').onclick = () => getModalInstance(getElement('tmsPreviewModal')).hide(); }
                 getElement('tmsPreviewPublishBtn').onclick = tmsDoPublish;
+
+                // Wire up Clash Squad publish button
+                const csPublishBtnEl = getElement('csPublishBtn');
+                if (csPublishBtnEl) csPublishBtnEl.addEventListener('click', csDoPublish);
 
         /* --- Leaderboard Mgt --- */
         async function loadLeaderboardManagementData() { const uArr = Object.values(fullUserDataCache); let h=''; uArr.forEach(u=>{ h+=`<tr data-uid="${u.uid}"><td>${u.displayName||u.email}</td><td><input type="number" class="form-control form-control-sm r-inp" value="${u.leaderboardRank||''}"></td><td><input type="number" class="form-control form-control-sm e-inp" value="${u.leaderboardDisplayEarnings||''}"></td></tr>`; }); getElement('leaderboardMgtTableBody').innerHTML=h; }
